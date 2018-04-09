@@ -1,0 +1,7 @@
+1.git checkout -b 本地分支名X origin/远程分支名X     //拉取远程分支并创建本地分支
+2.git checkout -b 本地分支名X master                 //以master为模板创建本地分支并切换
+3.git fetch origin 远程分支名x:本地分支名            //创建本地分支但不切换到本地分支
+4.git fetch origin master                            //从远程获取最新版本到本地
+5.git push origin test:mster                         //提交本地test分支作为远程的master分支
+6.git push origin test:test                          //提交本地test分支作为远程的test分支
+7.git push origin :test                              //刚提交的远程的test将被删除，但是本地还会保存
