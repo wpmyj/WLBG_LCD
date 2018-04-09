@@ -623,7 +623,7 @@ void LCD_Set_Window(u16 sx,u16 sy,u16 width,u16 height)
 //初始化lcd
 //该初始化函数可以初始化各种ILI93XX液晶,但是其他函数是基于ILI9320的!!!
 //在其他型号的驱动芯片上没有测试! 
-void LCD_Init1(void)
+void LCD_Init(void)
 { 					
  	ParallelPortInit();
 	
@@ -2759,7 +2759,7 @@ void LCD_Draw_Circle(u16 x0,u16 y0,u8 r)
 void LCD_ShowChar(u16 x,u16 y,u8 num,u8 size,u8 mode)
 {  							  
     u8 temp,t1,t;
-	u16 y0=y;
+	u16 x0=x;
 	u8 csize=(size/8+((size%8)?1:0))*(size/2);		//得到字体一个字符对应点阵集所占的字节数	
  	num=num-' ';//得到偏移后的值（ASCII字库是从空格开始取模，所以-' '就是对应字符的字库）
 	for(t=0;t<csize;t++)
@@ -2773,13 +2773,13 @@ void LCD_ShowChar(u16 x,u16 y,u8 num,u8 size,u8 mode)
 			if(temp&0x80)LCD_Fast_DrawPoint(x,y,POINT_COLOR);
 			else if(mode==0)LCD_Fast_DrawPoint(x,y,BACK_COLOR);
 			temp<<=1;
-			y++;
-			if(y>=lcddev.height)return;		//超区域了
-			if((y-y0)==size)
+			x++;
+			if(x>=lcddev.width)return;		//超区域了
+			if((x-x0)==size)
 			{
-				y=y0;
-				x++;
-				if(x>=lcddev.width)return;	//超区域了
+				x=x0;
+				y++;
+				if(y>=lcddev.height)return;	//超区域了
 				break;
 			}
 		}  	 

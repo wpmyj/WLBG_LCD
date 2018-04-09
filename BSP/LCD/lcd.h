@@ -140,7 +140,8 @@ typedef struct
 #define D2U_L2R  6 //从下到上,从左到右
 #define D2U_R2L  7 //从下到上,从右到左	 
 
-#define DFT_SCAN_DIR  L2R_U2D  //默认的扫描方向
+//#define DFT_SCAN_DIR  L2R_U2D  //默认的扫描方向
+#define DFT_SCAN_DIR  U2D_L2R  //默认的扫描方向
 
 //画笔颜色
 #define WHITE         	 0xFFFF
@@ -171,7 +172,7 @@ typedef struct
 #define LGRAYBLUE        0XA651 //浅灰蓝色(中间层颜色)
 #define LBBLUE           0X2B12 //浅棕蓝色(选择条目的反色)
 	    															  
-void LCD_Init1(void);													   	//初始化
+void LCD_Init(void);													   	//初始化
 void LCD_DisplayOn(void);													//开显示
 void LCD_DisplayOff(void);													//关显示
 void LCD_Clear(u16 Color);	 												//清屏
