@@ -120,14 +120,12 @@ void Get_HzMat(unsigned char *code,unsigned char *mat,u8 size)
 	unsigned char  AddrHigh,AddrMid,AddrLow ; //字高、中、低地址
 	unsigned long  FontAddr=0; //字地址
 	unsigned long  BaseAdd=0; //字库基地址	
-	unsigned char  h,w;// 不同点阵字库的计算变量
-//	CL_Mem();
 	switch(size)
 		{  // n个数，h：字高度，w：字宽度， d：字间距，c：页大小
-		case 12:  BaseAdd=0x0;			h=12; w=12;  break;  // 12*12  
-		case 16:  BaseAdd=0x2C9D0;  h=16; w=16;  break;   // 15*16  
-	  case 24:  BaseAdd=0x68190;  h=24; w=24;  break;   // 24*24  
-	  case 32:  BaseAdd=0xEDF00;  h=32; w=32;  break;   // 32*32  
+		case 12:  BaseAdd=0x0;			  break;  // 12*12  
+		case 16:  BaseAdd=0x2C9D0;    break;   // 15*16  
+	  case 24:  BaseAdd=0x68190;    break;   // 24*24  
+	  case 32:  BaseAdd=0xEDF00;    break;   // 32*32  
  		}
 	qh=*code;
 	ql=*(++code);
@@ -145,7 +143,6 @@ void Get_HzMat(unsigned char *code,unsigned char *mat,u8 size)
 			AddrMid = (FontAddr&0xff00)>>8;      /*地址的中8位,共24位*/
 			AddrLow = FontAddr&0xff;	     /*地址的低8位,共24位*/
 			ZK_Read_1_n(AddrHigh,AddrMid,AddrLow,mat,csize);/*取一个汉字的数据，存到"FontBuf[]"*/
-//			zk_map(mat,FontBuf,h,w);//字符转换
 		}
 		else if(((qh>=0xB0) &&(qh<=0xF7))&&(ql>=0xA1))
 		{						
@@ -160,7 +157,6 @@ void Get_HzMat(unsigned char *code,unsigned char *mat,u8 size)
 			AddrMid = (FontAddr&0xff00)>>8;      /*地址的中8位,共24位*/
 			AddrLow = FontAddr&0xff;	     /*地址的低8位,共24位*/
 			ZK_Read_1_n(AddrHigh,AddrMid,AddrLow,mat,csize);/*取一个汉字的数据，存到"FontBuf[ ]"*/
-//			zk_map(mat,FontBuf,h,w);//字符转换
 		}
 		
 	} 		  
@@ -189,7 +185,7 @@ void Show_Font(u16 x,u16 y,u8 *font,u8 size,u8 mode)
 		for(t1=0;t1<8;t1++)
 		{
 			if(temp&0x80)LCD_Fast_DrawPoint(x,y,POINT_COLOR);
-			else if(mode==0)LCD_Fast_DrawPoint(x,y,BACK_COLOR); 
+			else if((mode==0)||(mode==2))LCD_Fast_DrawPoint(x,y,BACK_COLOR); 
 			temp<<=1;
 			y++;
 			if((y-y0)==size)
@@ -208,40 +204,40 @@ void Show_Font(u16 x,u16 y,u8 *font,u8 size,u8 mode)
 //str  :字符串
 //size :字体大小
 //mode:0,非叠加方式;1,叠加方式    	   		   
-void Show_Str(u16 x,u16 y,u16 width,u16 height,u8*str,u8 size,u8 mode)
+void Show_Str(u16 y,u16 x,u16 width,u8*str,u8 size,u8 mode)
 {					
 	u16 x0=x;
-	u16 y0=y;							  	  
+	u16 y0=y;	
+	u16 height = size;
     u8 bHz=0;     //字符或者中文  	    				    				  	  
     while(*str!=0)//数据未结束
     { 
-        if(!bHz)
-        {
+        if(!bHz){
 	        if(*str>0x80){
 						bHz=1;//中文 
 					}else{              //字符     
               if(y>(y0+width-size/2)){				   
 								x+=size;
 								y=y0;	   
-							}							    
-		        if(x>(x0+height-size))break;//越界返回      
+							}		
+						if((x>(x0+height-size))&&(mode < 2))break;//越界返回,mode>=2时，文字一行显示不完可以换行显示    
 		        if(*str==13){//换行符号     
 		            x+=size;
 								y=y0;
 		            str++; 
-		        }  
-		        else LCD_ShowChar(x,y,*str,size,mode);//有效部分写入 
+		        }else {
+							LCD_ShowChar(y,x,*str,size,mode);//有效部分写入 
+						}
 						str++; 
 		        y+=size/2; //字符,为全字的一半 
 	        }
-        }else//中文 
-        {     
+        }else{//中文  
             bHz=0;//有汉字库    
             if(y>(y0+width-size)){	    
 							x+=size;
 							y=y0;		  
 						}
-	        if(x>(x0+height-size))break;//越界返回  						     
+	        if((x>(x0+height-size))&&(mode<2))break;//越界返回  						     
 	        Show_Font(x,y,str,size,mode); //显示这个汉字,空心显示 
 	        str+=2; 
 	        y+=size;//下一个汉字偏移	    
@@ -251,16 +247,16 @@ void Show_Str(u16 x,u16 y,u16 width,u16 height,u8*str,u8 size,u8 mode)
 //在指定宽度的中间显示字符串
 //如果字符长度超过了len,则用Show_Str显示
 //len:指定要显示的宽度			  
-void Show_Str_Mid(u16 x,u16 y,u8*str,u8 size,u8 len)
+void Show_Str_Mid(u16 y,u16 x,u8*str,u8 size,u16 len)
 {
 	u16 strlenth=0;
-   	strlenth=strlen((const char*)str);
+  strlenth=strlen((const char*)str);
 	strlenth*=size/2;
-	if(strlenth>len)Show_Str(x,y,lcddev.width,lcddev.height,str,size,1);
+	if(strlenth>len)Show_Str(y,x,lcddev.width,str,size,1);
 	else
 	{
-		strlenth=(len-strlenth)/2;
-	    Show_Str(strlenth+x,y,lcddev.width,lcddev.height,str,size,1);
+			strlenth=(len-strlenth)/2;
+	    Show_Str(strlenth+y,x,lcddev.width,str,size,1);
 	}
 }   
 
@@ -555,7 +551,76 @@ void Display_Asc_String(unsigned char zk_num,unsigned int x, unsigned int y, uns
 	}
 	
 }
+//code 字符指针开始
+//从字库中查找出字模
+//code 字符串的开始地址,GBK码
+//mat  数据存放地址 (size/8+((size%8)?1:0))*(size) bytes大小	
+//size:字体大小
+void Get_AscMat(unsigned char *code,unsigned char *mat,u8 size)
+{		    
+	unsigned char qh;			  
+	u8 csize=(size/8+((size%8)?1:0))*(size/2);//得到字体一个字符对应点阵集所占的字节数	 
+	unsigned char  AddrHigh,AddrMid,AddrLow ; //字高、中、低地址
+	unsigned long  FontAddr=0; //字地址
+	unsigned long  BaseAdd=0; //字库基地址	
+	switch(size)
+		{  // n个数，h：字高度，w：字宽度， d：字间距，c：页大小
+		case 7:   BaseAdd=0x1DDF80;			  break;  // 12*12 
+		case 8:   BaseAdd=0x1DE280;			  break;  // 12*12 
+		case 12:  BaseAdd=0x1DBE00;			  break;  // 12*12  
+		case 16:  BaseAdd=0x1DD780;   	 	break;   // 15*16  
+	  case 24:  BaseAdd=0x1DFF00;   		 break;   // 24*24  
+	  case 32:  BaseAdd=0x1E5A50;    		break;   // 32*32  
+ 		}
+		
+	qh=*code;
+	if((qh>0x00))
+	{
+		if((qh >= 0x20) &&(qh <= 0x7E))
+		{				
+			FontAddr = 	qh-0x20;
+			/*国标简体（GB2312）汉字在 字库IC中的地址由以下公式来计算：*/
+			/*Address = ((MSB - 0xA1) * 94 + (LSB - 0xA1))*n+ BaseAdd; 分三部取地址*/
 
+			FontAddr = (unsigned long)((FontAddr*csize)+BaseAdd);
+			
+			AddrHigh = (FontAddr&0xff0000)>>16;  /*地址的高8位,共24位*/
+			AddrMid = (FontAddr&0xff00)>>8;      /*地址的中8位,共24位*/
+			AddrLow = FontAddr&0xff;	     /*地址的低8位,共24位*/
+			ZK_Read_1_n(AddrHigh,AddrMid,AddrLow,mat,csize);/*取一个汉字的数据，存到"FontBuf[]"*/
+		}	
+	} 		  
+}  
+void Show_Str2(u16 x,u16 y,u8 *font,u8 size,u8 mode)
+{
+	u8 i,temp,t,t1;
+	u16 y0=y;
+	static u8 dzk[128];   
+	static u8 csize;
+	csize=(size/8+((size%8)?1:0))*(size/2);//得到字体一个字符对应点阵集所占的字节数
+	for(i=0;i<128;i++ ){
+      dzk[i]=0;
+	}
+	if(size!=12&&size!=16&&size!=24&&size!=32)return;	//不支持的size
+	Get_AscMat(font,dzk,size);	//得到相应大小的点阵数据 
+	for(t=0;t<csize;t++)
+	{   												   
+		temp=dzk[t];			//得到点阵数据                          
+		for(t1=0;t1<8;t1++)
+		{
+			if(temp&0x80)LCD_Fast_DrawPoint(x,y,POINT_COLOR);
+			else if((mode==0)||(mode==2))LCD_Fast_DrawPoint(x,y,BACK_COLOR); 
+			temp<<=1;
+			y++;
+			if((y-y0)==size)
+			{
+				y=y0;
+				x++;
+				break;
+			}
+		}  	 
+	}  
+}
 
 //***************************************************************
 //  显示 ASCII 2015-11晶奥测试通过

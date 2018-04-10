@@ -4,8 +4,8 @@
 #include "delay.h"	
 
 //LCD的画笔颜色和背景色	   
-u16 POINT_COLOR=0x0000;	//画笔颜色
-u16 BACK_COLOR=0xFFFF;  //背景色 
+u16 POINT_COLOR=WHITE;	//画笔颜色
+u16 BACK_COLOR=BLACK;  //背景色 
   
 //管理LCD重要参数
 //默认为竖屏
@@ -2656,7 +2656,9 @@ void LCD_Fill(u16 sx,u16 sy,u16 ex,u16 ey,u16 color)
 		{
 		 	LCD_SetCursor(sx,i);      				//设置光标位置 
 			LCD_WriteRAM_Prepare();     			//开始写入GRAM	  
-			for(j=0;j<xlen;j++)LCD->LCD_RAM=color;	//显示颜色 	    
+			for(j=0;j<xlen;j++){
+				LCD_WriteRAM(color);	//显示颜色 	  
+			}				
 		}
 	}	 
 }  
@@ -2673,7 +2675,10 @@ void LCD_Color_Fill(u16 sx,u16 sy,u16 ex,u16 ey,u16 *color)
 	{
  		LCD_SetCursor(sx,sy+i);   	//设置光标位置 
 		LCD_WriteRAM_Prepare();     //开始写入GRAM
-		for(j=0;j<width;j++)LCD->LCD_RAM=color[i*width+j];//写入数据 
+		for(j=0;j<width;j++)
+		{
+			LCD_WriteRAM(color[i*width+j]);//写入数据 
+		}
 	}		  
 }  
 //画线
@@ -2740,7 +2745,7 @@ void LCD_Draw_Circle(u16 x0,u16 y0,u8 r)
 		LCD_DrawPoint(x0-a,y0+b);             //1       
  		LCD_DrawPoint(x0-b,y0+a);             
 		LCD_DrawPoint(x0-a,y0-b);             //2             
-  		LCD_DrawPoint(x0-b,y0-a);             //7     	         
+  	LCD_DrawPoint(x0-b,y0-a);             //7     	         
 		a++;
 		//使用Bresenham算法画圆     
 		if(di<0)di +=4*a+6;	  
@@ -2756,9 +2761,9 @@ void LCD_Draw_Circle(u16 x0,u16 y0,u8 r)
 //num:要显示的字符:" "--->"~"
 //size:字体大小 12/16/24
 //mode:叠加方式(1)还是非叠加方式(0)
-void LCD_ShowChar(u16 x,u16 y,u8 num,u8 size,u8 mode)
+void LCD_ShowChar(u16 y,u16 x,u8 num,u8 size,u8 mode)
 {  							  
-    u8 temp,t1,t;
+  u8 temp,t1,t;
 	u16 x0=x;
 	u8 csize=(size/8+((size%8)?1:0))*(size/2);		//得到字体一个字符对应点阵集所占的字节数	
  	num=num-' ';//得到偏移后的值（ASCII字库是从空格开始取模，所以-' '就是对应字符的字库）
@@ -2771,7 +2776,7 @@ void LCD_ShowChar(u16 x,u16 y,u8 num,u8 size,u8 mode)
 		for(t1=0;t1<8;t1++)
 		{			    
 			if(temp&0x80)LCD_Fast_DrawPoint(x,y,POINT_COLOR);
-			else if(mode==0)LCD_Fast_DrawPoint(x,y,BACK_COLOR);
+			else if((mode==0)||(mode==2))LCD_Fast_DrawPoint(x,y,BACK_COLOR);
 			temp<<=1;
 			x++;
 			if(x>=lcddev.width)return;		//超区域了
@@ -2827,7 +2832,7 @@ void LCD_ShowNum(u16 x,u16 y,u32 num,u8 len,u8 size)
 //[7]:0,不填充;1,填充0.
 //[6:1]:保留
 //[0]:0,非叠加显示;1,叠加显示.
-void LCD_ShowxNum(u16 x,u16 y,u32 num,u8 len,u8 size,u8 mode)
+void LCD_ShowxNum(u16 y,u16 x,u32 num,u8 len,u8 size,u8 mode)
 {  
 	u8 t,temp;
 	u8 enshow=0;						   
@@ -2838,13 +2843,13 @@ void LCD_ShowxNum(u16 x,u16 y,u32 num,u8 len,u8 size,u8 mode)
 		{
 			if(temp==0)
 			{
-				if(mode&0X80)LCD_ShowChar(x+(size/2)*t,y,'0',size,mode&0X01);  
-				else LCD_ShowChar(x+(size/2)*t,y,' ',size,mode&0X01);  
+				if(mode&0X80)LCD_ShowChar(y+(size/2)*t,x,'0',size,mode&0X01);  
+				else LCD_ShowChar(y+(size/2)*t,x,' ',size,mode&0X01);  
  				continue;
 			}else enshow=1; 
 		 	 
 		}
-	 	LCD_ShowChar(x+(size/2)*t,y,temp+'0',size,mode&0X01); 
+	 	LCD_ShowChar(y+(size/2)*t,x,temp+'0',size,mode&0X01); 
 	}
 } 
 //显示字符串
@@ -2852,19 +2857,28 @@ void LCD_ShowxNum(u16 x,u16 y,u32 num,u8 len,u8 size,u8 mode)
 //width,height:区域大小  
 //size:字体大小
 //*p:字符串起始地址		  
-void LCD_ShowString(u16 x,u16 y,u16 width,u16 height,u8 size,u8 *p)
+void LCD_ShowString(u16 y,u16 x,u16 width,u8 *str,u8 size,u8 mode)
 {         
-	u8 x0=x;
-	width+=x;
-	height+=y;
-    while((*p<='~')&&(*p>=' '))//判断是不是非法字符!
-    {       
-        if(x>=width){x=x0;y+=size;}
-        if(y>=height)break;//退出
-        LCD_ShowChar(x,y,*p,size,0);
-        x+=size/2;
-        p++;
-    }  
+	u16 x0=x;
+	u16 y0=y;	
+	u16 height = size;
+	while(*str!=0)//数据未结束
+    { 
+				if(y>(y0+width-size/2)){				   
+					x+=size;
+					y=y0;	   
+				}		
+			if((x>(x0+height-size))&&(mode < 2))break;//越界返回,mode>=2时，文字一行显示不完可以换行显示    
+			if(*str==13){//换行符号     
+					x+=size;
+					y=y0;
+					str++; 
+			}else {
+				LCD_ShowChar(y,x,*str,size,mode);//有效部分写入 
+			}
+			str++; 
+			y+=size/2; //字符,为全字的一半 
+		}	
 }
 
 
