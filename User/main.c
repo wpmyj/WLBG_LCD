@@ -24,7 +24,6 @@ extern u8 Read_key(void);
 
 int main(void)
 {
-	static u8 tests = 'P';
 	delay_init();
 //	USART1_Config(9600);
   TIM2_Config();
@@ -36,8 +35,10 @@ int main(void)
 	while(1){
 		LCD_Clear(BLUE);
 		Show_Str_Mid(0,0,"我们是好孩子",16,320);
-	  Show_Str(20,50,6*32,"我们是好孩子",32,0);
-		Show_Str2(100,100,&tests,24,0);
+	  Show_Str(20,20,6*32,"我们是好孩子",24,0);
+		Show_Str(40,50,6*32,"我们是好孩子",24,0);
+		Show_Str(100,100,16*6,"Hello",32,0);
+		LCD_ShowString(10,130,12*32,"World",24,0);
 		delay_ms(1000);
 		delay_ms(1000);
 		LCD_Clear(RED);

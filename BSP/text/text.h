@@ -43,7 +43,7 @@ void zk_map(  unsigned char *getdate, unsigned char *putdata, unsigned char high
 void Set_Pos(unsigned char x, unsigned char y);
 void Set_Start_Page(unsigned char d);
 void Set_Start_Column(unsigned char d);
-void Show_Str2(u16 x,u16 y,u8 *font,u8 size,u8 mode);
+void Show_Ascchar(u16 y,u16 x,u8 Ascchar,u8 size,u8 mode);
 
 #endif
 

@@ -226,7 +226,8 @@ void Show_Str(u16 y,u16 x,u16 width,u8*str,u8 size,u8 mode)
 								y=y0;
 		            str++; 
 		        }else {
-							LCD_ShowChar(y,x,*str,size,mode);//有效部分写入 
+//							LCD_ShowChar(y,x,*str,size,mode);//有效部分写入 
+							Show_Ascchar(y,x,*str,size,mode);
 						}
 						str++; 
 		        y+=size/2; //字符,为全字的一半 
@@ -281,14 +282,14 @@ void Display_GB2312_String(unsigned char zk_num,unsigned int  x,unsigned int  y,
 	
 	unsigned long  FontAddr=0; //字地址
 	unsigned long  BaseAdd=0; //字库基地址	
-	unsigned char  n,h,w,d,p;// 不同点阵字库的计算变量
+	unsigned char  n,h,w,d;// 不同点阵字库的计算变量
  	CL_Mem(); //清缓存数组，不清会导致12*12显示异常
 	switch(zk_num)
 		{  // n个数，h：字高度，w：字宽度， d：字间距，c：页大小
-		case '1':  BaseAdd=0x0;     n=24;  h=12; w=12; d=12; p=2;  break;  // 12*12  
-		case '2':  BaseAdd=0x2C9D0; n=32;  h=16; w=16; d=16; p=2;  break;   // 15*16  
-	    case '3':  BaseAdd=0x68190; n=72;  h=24; w=24; d=24; p=3;  break;   // 24*24  
-	    case '4':  BaseAdd=0xEDF00; n=128; h=32; w=32; d=32; p=4;  break;   // 32*32  
+		case '1':  BaseAdd=0x0;     n=24;  h=12; w=12; d=12;   break;  // 12*12  
+		case '2':  BaseAdd=0x2C9D0; n=32;  h=16; w=16; d=16;   break;   // 15*16  
+	    case '3':  BaseAdd=0x68190; n=72;  h=24; w=24; d=24;  break;   // 24*24  
+	    case '4':  BaseAdd=0xEDF00; n=128; h=32; w=32; d=32;  break;   // 32*32  
  		}
 		
 	while((text[i]>0x00))
@@ -541,7 +542,7 @@ void Display_Asc_String(unsigned char zk_num,unsigned int x, unsigned int y, uns
 			AddrMid = (FontAddr&0xff00)>>8;      /*地址的中8位,共24位*/
 			AddrLow = FontAddr&0xff;	     /*地址的低8位,共24位*/
 			ZK_Read_1_n(AddrHigh,AddrMid,AddrLow,FontBuf,n );/*取一个汉字的数据，存到"FontBuf[]"*/
-		 zk_map(Font_Map,FontBuf, h, w);	//数据变换
+		  zk_map(Font_Map,FontBuf, h, w);	//数据变换
 			Display_Asc(zk_num,x,y);/*显示一个ascii到OLED上 */
             i+=1;
 			x+=d;//下一个字坐标
@@ -551,6 +552,7 @@ void Display_Asc_String(unsigned char zk_num,unsigned int x, unsigned int y, uns
 	}
 	
 }
+
 //code 字符指针开始
 //从字库中查找出字模
 //code 字符串的开始地址,GBK码
@@ -565,12 +567,12 @@ void Get_AscMat(unsigned char *code,unsigned char *mat,u8 size)
 	unsigned long  BaseAdd=0; //字库基地址	
 	switch(size)
 		{  // n个数，h：字高度，w：字宽度， d：字间距，c：页大小
-		case 7:   BaseAdd=0x1DDF80;			  break;  // 12*12 
-		case 8:   BaseAdd=0x1DE280;			  break;  // 12*12 
-		case 12:  BaseAdd=0x1DBE00;			  break;  // 12*12  
-		case 16:  BaseAdd=0x1DD780;   	 	break;   // 15*16  
-	  case 24:  BaseAdd=0x1DFF00;   		 break;   // 24*24  
-	  case 32:  BaseAdd=0x1E5A50;    		break;   // 32*32  
+		case 7:   BaseAdd=0x1DDF80;			  break;  // 5*7 
+		case 8:   BaseAdd=0x1DE280;			  break;  // 7*8 
+		case 12:  BaseAdd=0x1DBE00;			  break;  // 6*12  
+		case 16:  BaseAdd=0x1DD780;   	 	break;   // 8*16  
+	  case 24:  BaseAdd=0x1DFF00;	csize = 48;break;   // 12*24,size=24时，上面算字节的公式不适用
+	  case 32:  BaseAdd=0x1E5A50;    		break;   // 16*32  
  		}
 		
 	qh=*code;
@@ -579,9 +581,6 @@ void Get_AscMat(unsigned char *code,unsigned char *mat,u8 size)
 		if((qh >= 0x20) &&(qh <= 0x7E))
 		{				
 			FontAddr = 	qh-0x20;
-			/*国标简体（GB2312）汉字在 字库IC中的地址由以下公式来计算：*/
-			/*Address = ((MSB - 0xA1) * 94 + (LSB - 0xA1))*n+ BaseAdd; 分三部取地址*/
-
 			FontAddr = (unsigned long)((FontAddr*csize)+BaseAdd);
 			
 			AddrHigh = (FontAddr&0xff0000)>>16;  /*地址的高8位,共24位*/
@@ -591,18 +590,22 @@ void Get_AscMat(unsigned char *code,unsigned char *mat,u8 size)
 		}	
 	} 		  
 }  
-void Show_Str2(u16 x,u16 y,u8 *font,u8 size,u8 mode)
+void Show_Ascchar(u16 y,u16 x,u8 Ascchar,u8 size,u8 mode)
 {
 	u8 i,temp,t,t1;
 	u16 y0=y;
 	static u8 dzk[128];   
 	static u8 csize;
-	csize=(size/8+((size%8)?1:0))*(size/2);//得到字体一个字符对应点阵集所占的字节数
+	if(size == 24){
+		csize = 48;
+	}else{
+		csize=(size/8+((size%8)?1:0))*(size/2);//得到字体一个字符对应点阵集所占的字节数
+	}
 	for(i=0;i<128;i++ ){
       dzk[i]=0;
 	}
 	if(size!=12&&size!=16&&size!=24&&size!=32)return;	//不支持的size
-	Get_AscMat(font,dzk,size);	//得到相应大小的点阵数据 
+	Get_AscMat(&Ascchar,dzk,size);	//得到相应大小的点阵数据 
 	for(t=0;t<csize;t++)
 	{   												   
 		temp=dzk[t];			//得到点阵数据                          
@@ -612,7 +615,7 @@ void Show_Str2(u16 x,u16 y,u8 *font,u8 size,u8 mode)
 			else if((mode==0)||(mode==2))LCD_Fast_DrawPoint(x,y,BACK_COLOR); 
 			temp<<=1;
 			y++;
-			if((y-y0)==size)
+			if((y-y0)==size/2)
 			{
 				y=y0;
 				x++;
