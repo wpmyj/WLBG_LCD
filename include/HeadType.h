@@ -264,6 +264,11 @@ extern  Answer_Type 	 PC_Answer;
 extern int Lock_Excute_Time;
 extern u8 open_lock_count;
 extern unsigned char send_cark_flag;
+
+extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim3;
+extern TIM_HandleTypeDef htim4;
+
 /*************extern variable end*******************/
 
 /*************function start*******************/
@@ -277,6 +282,10 @@ void KEY_GPIO_Config(void);
 u16 switch_init_time(void);
 void dispose_key(void );
 void dispose_menu(void);
+
+void TIM2_Config(void );
+void TIM3_Config(void );
+void TIM4_Config(void );
 /*************function end*******************/
 #endif
 

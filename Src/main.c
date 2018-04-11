@@ -64,6 +64,8 @@ int main(void)
 	ROM_GT30L_Init();
 	LCD_Init();
 	MX_GPIO_Init();
+	TIM2_Config();
+	TIM3_Config();
 	delay_ms(200);
   while (1)
   {
