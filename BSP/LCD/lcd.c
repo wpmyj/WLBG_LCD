@@ -1,7 +1,7 @@
 #include "lcd.h"
 #include "stdlib.h"
 #include "font.h" 
-#include "delay.h"	
+#include "stm32f1xx_hal.h"
 
 //LCD的画笔颜色和背景色	   
 u16 POINT_COLOR=WHITE;	//画笔颜色
@@ -11,38 +11,47 @@ u16 BACK_COLOR=BLACK;  //背景色
 //默认为竖屏
 _lcd_dev lcddev;
 
-/**
-  * @brief  初始化 STM32 与 RC500 连接 并行接口
-  * @param  none
-  * @return none
-  * @global none
-  * @attention: 
-  *		必须开启时钟，输出引脚配置为推挽输出
-  */
+void delay_us(u32 nus)
+{		
+	u32 i,j;
+	for(i=0;i<nus;i++){
+		for(j=0;j<5;j++);
+	}
+}
+void delay_ms(u16 nms)
+{
+	HAL_Delay(nms);
+}
 void ParallelPortInit(){
-	/*********************************** 硬件连接 ***********************************
-	 *
-	 *			复用地址/数据总线D0...D7		<---->	PC0...PC7(in/out)	浮空输入/推挽输出
-	 *						NCS片选信号		<---->	PC8(out)			推挽输出
-	 *					  ALE地址锁存信号	<---->	PB8(out)			推挽输出
-	 *					  NRD读使能信号		<---->	PC10(out)			推挽输出
-	 *					  NWR写使能信号		<---->	PC11(out)			推挽输出
-	 *					  	RST复位信号		<---->	PB12(out)			推挽输出
-	 *
-	 ********************************************************************************/
-	GPIO_InitTypeDef GPIO_InitStructure;
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA |RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC, ENABLE);
-	
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	// 速度配置太高，会导致噪声过大
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;  	// 推挽输出
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7|GPIO_Pin_8|GPIO_Pin_9|GPIO_Pin_10|GPIO_Pin_11|GPIO_Pin_12|GPIO_Pin_13|GPIO_Pin_14|GPIO_Pin_15;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;  	// 推挽输出
-	GPIO_Init(GPIOB, &GPIO_InitStructure); 
-	
+
+	GPIO_InitTypeDef GPIO_InitStruct;
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6 
+                          |GPIO_PIN_7, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13 
+                          |GPIO_PIN_14|GPIO_PIN_15|GPIO_PIN_7|GPIO_PIN_8 
+                          |GPIO_PIN_9, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : PA1 PA4 PA5 PA6 
+                           PA7 */
+  GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6 |GPIO_PIN_7;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PB10 PB11 PB12 PB13 
+                           PB14 PB15 PB7 PB8 
+                           PB9 */
+  GPIO_InitStruct.Pin = GPIO_PIN_7|GPIO_PIN_8 |GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13 |GPIO_PIN_14|GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);	
 }
 
 
@@ -89,14 +98,15 @@ void LCD_WR_DATA(u16 data)
 //返回值:读到的值
 u16 LCD_RD_DATA(void)
 {
-	GPIO_InitTypeDef GPIO_InitStructure;
+	 GPIO_InitTypeDef GPIO_InitStruct;
 	vu16 ram;			//防止被优化
 //	u8 rdata1,rdata2;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8|GPIO_Pin_9|GPIO_Pin_10|GPIO_Pin_11
-								 |GPIO_Pin_12|GPIO_Pin_13|GPIO_Pin_14|GPIO_Pin_15;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;		
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; 
-	GPIO_Init(GPIOB, &GPIO_InitStructure);	
+  GPIO_InitStruct.Pin = GPIO_PIN_8 |GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13 |GPIO_PIN_14|GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+	
 	NCS_L;
 	NWR_H;
 	NRS_H;
@@ -107,12 +117,10 @@ u16 LCD_RD_DATA(void)
 
 	NCS_H;
 	
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8|GPIO_Pin_9|GPIO_Pin_10|GPIO_Pin_11
-								 |GPIO_Pin_12|GPIO_Pin_13|GPIO_Pin_14|GPIO_Pin_15;  
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;  
-	
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
+  GPIO_InitStruct.Pin = GPIO_PIN_7|GPIO_PIN_8 |GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13 |GPIO_PIN_14|GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);	
 	return ram;	 
 }					   
 //写寄存器
@@ -2600,7 +2608,6 @@ void LCD_Init(void)
 		LCD_SSD_BackLightSet(100);//背光设置为最亮
 	}		 
 	LCD_Display_Dir(1);		//默认为竖屏
-	LCD_LED=1;				//点亮背光
 //	LCD_Clear(WHITE);
 }  
 //清屏函数

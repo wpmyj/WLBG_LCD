@@ -2,99 +2,42 @@
 #define __LCD_H		 
 #include "stdlib.h"
 #include"HeadType.h"
-//////////////////////////////////////////////////////////////////////////////////	 
-//本程序只供学习使用，未经作者许可，不得用于其它任何用途
-//ALIENTEK 战舰STM32F103开发板V3
-//2.4寸/2.8寸/3.5寸/4.3寸/7寸 TFT液晶驱动	  
-//支持驱动IC型号包括:ILI9341/ILI9325/RM68042/RM68021/ILI9320/ILI9328/LGDP4531/LGDP4535/
-//                  SPFD5408/1505/B505/C505/NT35310/NT35510/SSD1963等		    
-//正点原子@ALIENTEK
-//技术论坛:www.openedv.com
-//创建日期:2010/7/4
-//版本：V2.9
-//版权所有，盗版必究。
-//Copyright(C) 广州市星翼电子科技有限公司 2014-2024
-//All rights reserved	
-//********************************************************************************
-//V1.2修改说明
-//支持了SPFD5408的驱动,另外把液晶ID直接打印成HEX格式.方便查看LCD驱动IC.
-//V1.3
-//加入了快速IO的支持
-//修改了背光控制的极性（适用于V1.8及以后的开发板版本）
-//对于1.8版本之前(不包括1.8)的液晶模块,请修改LCD_Init函数的LCD_LED=1;为LCD_LED=1;
-//V1.4
-//修改了LCD_ShowChar函数，使用画点功能画字符。
-//加入了横竖屏显示的支持
-//V1.5 20110730
-//1,修改了B505液晶读颜色有误的bug.
-//2,修改了快速IO及横竖屏的设置方式.
-//V1.6 20111116
-//1,加入对LGDP4535液晶的驱动支持
-//V1.7 20120713
-//1,增加LCD_RD_DATA函数
-//2,增加对ILI9341的支持
-//3,增加ILI9325的独立驱动代码
-//4,增加LCD_Scan_Dir函数(慎重使用)	  
-//6,另外修改了部分原来的函数,以适应9341的操作
-//V1.8 20120905
-//1,加入LCD重要参数设置结构体lcddev
-//2,加入LCD_Display_Dir函数,支持在线横竖屏切换
-//V1.9 20120911
-//1,新增RM68042驱动（ID:6804），但是6804不支持横屏显示！！原因：改变扫描方式，
-//导致6804坐标设置失效，试过很多方法都不行，暂时无解。
-//V2.0 20120924
-//在不硬件复位的情况下,ILI9341的ID读取会被误读成9300,修改LCD_Init,将无法识别
-//的情况（读到ID为9300/非法ID）,强制指定驱动IC为ILI9341，执行9341的初始化。
-//V2.1 20120930
-//修正ILI9325读颜色的bug。
-//V2.2 20121007
-//修正LCD_Scan_Dir的bug。
-//V2.3 20130120
-//新增6804支持横屏显示
-//V2.4 20131120
-//1,新增NT35310（ID:5310）驱动器的支持
-//2,新增LCD_Set_Window函数,用于设置窗口,对快速填充,比较有用,但是该函数在横屏时,不支持6804.
-//V2.5 20140211
-//1,新增NT35510（ID:5510）驱动器的支持
-//V2.6 20140504
-//1,新增ASCII 24*24字体的支持(更多字体用户可以自行添加)  
-//2,修改部分函数参数,以支持MDK -O2优化
-//3,针对9341/35310/35510,写时间设置为最快,尽可能的提高速度
-//4,去掉了SSD1289的支持,因为1289实在是太慢了,读周期要1us...简直奇葩.不适合F4使用
-//5,修正68042及C505等IC的读颜色函数的bug.
-//V2.7 20140710
-//1,修正LCD_Color_Fill函数的一个bug. 
-//2,修正LCD_Scan_Dir函数的一个bug.
-//V2.8 20140721
-//1,解决MDK使用-O2优化时LCD_ReadPoint函数读点失效的问题.
-//2,修正LCD_Scan_Dir横屏时设置的扫描方式显示不全的bug.
-//V2.9 20141130
-//1,新增对SSD1963 LCD的支持.
-//2,新增LCD_SSD_BackLightSet函数
-//3,取消ILI93XX的Rxx寄存器定义
-//////////////////////////////////////////////////////////////////////////////////	 
+	 
+//#define RST (1<<7) 			// PB7
+//#define WR (1<<5)  			// PA3
+//#define RD (1<<4)  			// PA2
+//#define RS (1<<6)   			// PA4
+//#define CS (1<<7)   			// PA5
 
- #define RST (1<<7) 			// PB7
-#define WR (1<<3)  			// PA3
-#define RD (1<<2)  			// PA2
-#define RS (1<<4)   			// PA4
-#define CS (1<<5)   			// PA5
-#define ALE (1<<6)  			// PC6
+//#define RST_L GPIOB->ODR &= ~RST
+//#define RST_H GPIOB->ODR |= RST
+//					  
+//#define NWR_L GPIOA->ODR &= ~WR
+//#define NWR_H GPIOA->ODR |= WR
+			  
+//#define NRD_L GPIOA->ODR &= ~RD
+//#define NRD_H GPIOA->ODR |= RD
 
-#define RST_L GPIOB->ODR &= ~RST
-#define RST_H GPIOB->ODR |= RST
+//#define NRS_L GPIOA->ODR &= ~RS 
+//#define NRS_H GPIOA->ODR |= RS
+
+//#define NCS_L GPIOA->ODR &= ~CS 
+//#define NCS_H GPIOA->ODR |= CS
+
+#define RST_L 	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_7,GPIO_PIN_RESET)
+#define RST_H 	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_7,GPIO_PIN_SET)
 					  
-#define NWR_L GPIOA->ODR &= ~WR
-#define NWR_H GPIOA->ODR |= WR
+#define NWR_L 	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,GPIO_PIN_RESET)
+#define NWR_H 	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,GPIO_PIN_SET)
 					  
-#define NRD_L GPIOA->ODR &= ~RD
-#define NRD_H GPIOA->ODR |= RD
+#define NRD_L 	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,GPIO_PIN_RESET)
+#define NRD_H 	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,GPIO_PIN_SET)
 		
-#define NRS_L GPIOA->ODR &= ~RS 
-#define NRS_H GPIOA->ODR |= RS
+#define NRS_L 	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,GPIO_PIN_RESET)
+#define NRS_H 	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,GPIO_PIN_SET)
 
-#define NCS_L GPIOA->ODR &= ~CS 
-#define NCS_H GPIOA->ODR |= CS
+#define NCS_L 	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_7,GPIO_PIN_RESET)
+#define NCS_H 	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_7,GPIO_PIN_SET)
 //LCD重要参数集
 typedef struct  
 {										    
@@ -171,7 +114,8 @@ typedef struct
 
 #define LGRAYBLUE        0XA651 //浅灰蓝色(中间层颜色)
 #define LBBLUE           0X2B12 //浅棕蓝色(选择条目的反色)
-	    															  
+
+void delay_ms(u16 nms);
 void LCD_Init(void);													   	//初始化
 void LCD_DisplayOn(void);													//开显示
 void LCD_DisplayOff(void);													//关显示

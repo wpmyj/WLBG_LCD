@@ -1,7 +1,7 @@
 #include "lcd.h"
 #include "text.h"	
 #include "string.h"												    											    
- 
+#include "stm32f1xx_hal.h"
 
 unsigned char    FontBuf[128];//字库缓存
 unsigned char    Font_Map[128];//字库缓存
@@ -9,28 +9,37 @@ unsigned char    Font_Map[128];//字库缓存
 					    
 void ROM_GT30L_Init(void)
 { 	
- 
- 	 
- 	GPIO_InitTypeDef  GPIO_InitStructure;
- 	
- 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);	 //使能A端口时钟
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;	 
- 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //推挽输出
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;//速度50MHz
- 	GPIO_Init(GPIOA, &GPIO_InitStructure);	  //初始化
- 	GPIO_SetBits(GPIOA,GPIO_Pin_1);	
 	
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);	 //使能A端口时钟
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2|GPIO_Pin_3;	 
- 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //推挽输出
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;//速度50MHz
- 	GPIO_Init(GPIOC, &GPIO_InitStructure);	  //初始化GPIOD3,6
- 	GPIO_SetBits(GPIOC,GPIO_Pin_2|GPIO_Pin_3);	
-	
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;	 
- 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; 		 //推挽输出
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;//速度50MHz
- 	GPIO_Init(GPIOC, &GPIO_InitStructure);	  //初始化GPIOD3,6
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_2|GPIO_PIN_3, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : PC0 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PC2 PC3 */
+  GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_3;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PA1 PA4 PA5 PA6 
+                           PA7 */
+  GPIO_InitStruct.Pin = GPIO_PIN_1;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 }
 
  void send_command_to_ZK( uchar dat )
@@ -60,7 +69,7 @@ void ROM_GT30L_Init(void)
 //		SDO_ZK =1; 
 		ROM_SCK_Clr();  //字库时钟拉低  
 		ret_data=ret_data<<1;
-		if( READ_ROM_OUT())
+		if(GPIO_PIN_SET == READ_ROM_OUT())
 			{ret_data=ret_data+1; 
 			}
 		else
@@ -260,298 +269,6 @@ void Show_Str_Mid(u16 y,u16 x,u8*str,u8 size,u16 len)
 	    Show_Str(strlenth+y,x,lcddev.width,str,size,1);
 	}
 }   
-
-
-
-
-
-  
-
- 
- //*************************************************************************
- //****	Display_GB2312_String（）汉字字符串显示程序	***//
- //zk_num定义：汉字库的标示符 1:GB2312_12*12,2:GB2312_15*16, 3:GB2312_24*24, 4:GB2312_32*32,
- //x：列坐标 y：行坐标
- //text[]：要显示的汉字
- //**************************************************************************
-void Display_GB2312_String(unsigned char zk_num,unsigned int  x,unsigned int  y, unsigned char  text[])
-{
-   
-	unsigned char  i= 0;
-	unsigned char  AddrHigh,AddrMid,AddrLow ; //字高、中、低地址
-	
-	unsigned long  FontAddr=0; //字地址
-	unsigned long  BaseAdd=0; //字库基地址	
-	unsigned char  n,h,w,d;// 不同点阵字库的计算变量
- 	CL_Mem(); //清缓存数组，不清会导致12*12显示异常
-	switch(zk_num)
-		{  // n个数，h：字高度，w：字宽度， d：字间距，c：页大小
-		case '1':  BaseAdd=0x0;     n=24;  h=12; w=12; d=12;   break;  // 12*12  
-		case '2':  BaseAdd=0x2C9D0; n=32;  h=16; w=16; d=16;   break;   // 15*16  
-	    case '3':  BaseAdd=0x68190; n=72;  h=24; w=24; d=24;  break;   // 24*24  
-	    case '4':  BaseAdd=0xEDF00; n=128; h=32; w=32; d=32;  break;   // 32*32  
- 		}
-		
-	while((text[i]>0x00))
-	{
-	    if(x>(128-d))
-	      {  y=y+d; 
-		     x=0; 
-			 	 }//溢出换行
-
-		if(((text[i]>=0xA1) &&(text[i]<=0xA9))&&(text[i+1]>=0xA1))
-		{						
-			/*国标简体（GB2312）汉字在 字库IC中的地址由以下公式来计算：*/
-			/*Address = ((MSB - 0xA1) * 94 + (LSB - 0xA1))*n+ BaseAdd; 分三部取地址*/
-		 	FontAddr = (text[i]- 0xA1)*94; 
-			FontAddr += (text[i+1]-0xA1);
-			FontAddr = (unsigned long)((FontAddr*n)+BaseAdd);
-			
-			AddrHigh = (FontAddr&0xff0000)>>16;  /*地址的高8位,共24位*/
-			AddrMid = (FontAddr&0xff00)>>8;      /*地址的中8位,共24位*/
-			AddrLow = FontAddr&0xff;	     /*地址的低8位,共24位*/
-			ZK_Read_1_n(AddrHigh,AddrMid,AddrLow,FontBuf,n );/*取一个汉字的数据，存到"FontBuf[]"*/
-				zk_map(Font_Map,FontBuf,h,w);//字符转换
-			Display_GB2312(zk_num,x,y);//显示一个汉字到OLED上/ 
-					
-			x=x+d; //下一个字坐标
-			i+=2;  //下个字符
-		}
-		else if(((text[i]>=0xB0) &&(text[i]<=0xF7))&&(text[i+1]>=0xA1))
-		{						
-			/*国标简体（GB2312） 字库IC中的地址由以下公式来计算：*/
-			/*Address = ((MSB - 0xB0) * 94 + (LSB - 0xA1)+846)*n+ BaseAdd; 分三部取地址*/
-			 
-			FontAddr = (text[i]- 0xB0)*94; 
-			FontAddr += (text[i+1]-0xA1)+846;
-			FontAddr = (unsigned long)((FontAddr*n)+BaseAdd);
-			
-			AddrHigh = (FontAddr&0xff0000)>>16;  /*地址的高8位,共24位*/
-			AddrMid = (FontAddr&0xff00)>>8;      /*地址的中8位,共24位*/
-			AddrLow = FontAddr&0xff;	     /*地址的低8位,共24位*/
-			ZK_Read_1_n(AddrHigh,AddrMid,AddrLow,FontBuf,n );/*取一个汉字的数据，存到"FontBuf[ ]"*/
-				zk_map(Font_Map,FontBuf,h,w);//字符转换
-			Display_GB2312(zk_num,x,y);//显示一个汉字到OLED上/
-	 		x=x+d; //下一个字坐标
-			i+=2;  //下个字符
-
-		}
-		
-	}
-	
-}
-
-//***************************************************************
-//  显示12*12 15*16 24*24 32*32 GB2312点阵汉字 2015-11晶奥测试通过
-//   zk_num：汉字 库中的类型  GB_1212 1616 2424 3232 
-//   x: 开始列 
-//   y: 开始页 0~7
-//*************************************************************** 
-void Display_GB2312( unsigned char zk_num,unsigned int x, unsigned int y )
-{
-//	unsigned char i,j;
- 
-		
-	switch(zk_num)
-	{
-		case '1':  
-
-			break;  // 12*12  
-
-		case '2': 
-
-	 		 break;     // 15*16 
-
-	    case '3':  
-
-		    break;      // 24*24  
-
-	    case '4':  
-	
-			  break;     // 32*32  
-			}
-}
-
-
-
-
-
-  //*************************************************************************
- //****	Display_GBasc_String（）国标扩展字符字符串显示程序	***//
- //zk_num定义： 字库的标示符 1: 6X12 点国标扩展字符,2:8X16 点国标扩展字符,3:8X16 点国标扩展特殊字符, 4:12X24 点国标扩展字符, 5:16X32 点国标扩展字符
- //x：列坐标 y：行坐标
- //text[]：要显示的字符
- //**************************************************************************
-void Display_GBasc_String(unsigned char zk_num,unsigned int x, unsigned int y, unsigned char  text[])
-{
-   
-	unsigned char  i= 0;
-	unsigned short  FontCode  ; // 字符内码
-	unsigned char  AddrHigh,AddrMid,AddrLow ; //字高、中、低地址
-
-	unsigned long  FontAddr=0; //字地址
-	unsigned long  BaseAdd=0; //字库基地址	
-	unsigned char  n= 0, d=0;// 不同点阵字库的计算变量
-	
-	switch(zk_num)
-	{
-		case '1':  BaseAdd=0x1DBE0C; n=12 ;d=8;  break;	 //	   6X12 点国标扩展字符
-		case '2':  BaseAdd=0x1DD790; n=16;d=8;  break;	 //8X16 点国标扩展字符
-		case '3':  BaseAdd=0x1F2880; n=16;d=8;  break;	 //8X16 点国标扩展特殊字符
-	    case '4':  BaseAdd=0x1DFF30; n=48; d=12; break;	 //12X24 点国标扩展字符
-	    case '5':  BaseAdd=0x1E5A90; n=64;d=16; break;	 // 16X32 点国标扩展字符
-			}
-		
-	while((text[i]>0x00))
-	{	
-	     if(x>(256-d))
-	      {  y=y+d; 
-		     x=0; 
-			 	 }//溢出换行
-
- 	     FontCode =	0xAA00|(text[i]|0x80);	//ascii最高位为1
-		if((FontCode>=0xAAA1) &&(FontCode<=0xAAFE))
-		{						
-		    FontAddr = 	FontCode-0xAAA1;
-			FontAddr = (unsigned long)((FontAddr*n)+BaseAdd);
-			AddrHigh = (FontAddr&0xff0000)>>16;  /*地址的高8位,共24位*/
-			AddrMid = (FontAddr&0xff00)>>8;      /*地址的中8位,共24位*/
-			AddrLow = FontAddr&0xff;	     /*地址的低8位,共24位*/
-			ZK_Read_1_n(AddrHigh,AddrMid,AddrLow,FontBuf,n );/*取一个汉字的数据，存到"FontBuf[]"*/
-			Display_GBasc(zk_num,x,y);/*显示一个字符到OLED上 */
-			i+=1;
-			x+=d;//下一个字坐标
-		 
-		}
-		else
-		
-		  if((FontCode>=0xABA1) &&(FontCode<=0xABC0))	 
-		{						
-		    FontAddr = 	(FontCode-0xABA1)+95;
-			FontAddr = (unsigned long)((FontAddr*n)+BaseAdd);
-			AddrHigh = (FontAddr&0xff0000)>>16;  /*地址的高8位,共24位*/
-			AddrMid = (FontAddr&0xff00)>>8;      /*地址的中8位,共24位*/
-			AddrLow = FontAddr&0xff;	     /*地址的低8位,共24位*/
-			ZK_Read_1_n(AddrHigh,AddrMid,AddrLow,FontBuf,n );/*取一个汉字的数据，存到"FontBuf[]"*/
-			Display_GBasc(zk_num,x,y);/*显示一个字符到OLED上 */
-			i+=1;
-			x+=d;//下一个字坐标
-		 
-		}
-		 else
-			
-			if((FontCode>=0xACA1) &&(FontCode<=0xACDF))		// 8X16 点国标扩展特殊字符
-		{						
-		    FontAddr = 	FontCode-0xACA1;
-			FontAddr = (unsigned long)((FontAddr*n)+BaseAdd);
-			AddrHigh = (FontAddr&0xff0000)>>16;  //地址的高8位,共24位/
-			AddrMid = (FontAddr&0xff00)>>8;      //地址的中8位,共24位/
-			AddrLow = FontAddr&0xff;	     //地址的低8位,共24位/
-			ZK_Read_1_n(AddrHigh,AddrMid,AddrLow,FontBuf,n );//取一个汉字的数据，存到"FontBuf[]"/
-			Display_GBasc(zk_num,x,y);//显示一个字符到OLED上 /
-			i+=1;
-			x+=d;//下一个字坐标
-		 
-		}
-
-
-	}
-	
-}
- 
-//***************************************************************
-//  显示6*12 8*16 12*24 16*32 GB2312点阵ASCII 2015-11晶奥测试通过
-//zk_num定义： 字库的标示符 1: 6X12 点国标扩展字符,2:8X16 点国标扩展字符,3:8X16 点国标扩展特殊字符, 4:12X24 点国标扩展字符, 5:16X32 点国标扩展字符
-//   x: Start Column  开始列 范围 0~（256-16）
-//   y: Start Row   开始行 0~63 
-//*************************************************************** 
-void Display_GBasc( unsigned char zk_num,unsigned int x, unsigned int y )
-{
-    //extern unsigned char  FontBuf[128];//字库缓存	
-//	unsigned char j ,x0,y0,n;
-//	unsigned int  x1=x/4; 
-		
-//	switch(zk_num)
-//	{
-//		case '1':  x0=1;y0=11; n=12;  break;
-//		case '2':  x0=1;y0=15; n=16;  break;
-//		case '3':  x0=1;y0=15; n=16;  break;
-//	    case '4':  x0=3;y0=23; n=48;  break;
-//	    case '5':  x0=3;y0=31; n=64;  break;
-//			}
-//		
-//	Set_Column_Address(Shift+x1,Shift+x1+x0); // 设置列坐标，shift为列偏移量由1322决定。 
-//	Set_Row_Address(y,y+y0); //设置行坐标
-//	Set_Write_RAM();	 //	写显存
-//	 
-//	for(j=0;j<n;j++)
-//	{
-//		 con_4_byte(FontBuf[j]);//数据转换，把数组数据送入SSD1322
-//	}
-
-}
- 
-
-
-
-
-
-
-
- //*************************************************************************
- //****	Display_Asc_String  ASCII字符串显示程序	***//
- //zk_num定义：汉字库的标示符 1:5x7 ASCII,2:7x8 ASCII, 3:6x12 ASCII, 4:8x16 ASCII,	5: 12x24 ASCII,6:16x32 ASCII;
- //x：列坐标 y：行坐标
- //text[]：要显示的ASCII
- //**************************************************************************
-void Display_Asc_String(unsigned char zk_num,unsigned int x, unsigned int y, unsigned char  text[])
-{
-   
-	unsigned char  i= 0;
-	unsigned char  AddrHigh,AddrMid,AddrLow ; //字高、中、低地址
-
-	unsigned long  FontAddr=0; //字地址
-	unsigned long  BaseAdd=0; //字库基地址	
-      unsigned char  n,h,w,d,c;// 不同点阵字库的计算变量
-	CL_Mem(); //清缓存数组 ,不清会导致6*12显示异常
-	switch(zk_num)
-	{	// n个数，h：字高度，w：字宽度， d：字间距，c：页大小
-		case '1':  BaseAdd=0x1DDF80; n=8;  h=7;  w=5;  d=6 ; c=1;  break;	 //	  5x7 ASCII
-		case '2':  BaseAdd=0x1DE280; n=8;  h=8;  w=7;  d=8;  c=1;  break;	 //   7x8 ASCII
-		case '3':  BaseAdd=0x1DBE00; n=12; h=12; w=6;  d=6;  c=2;  break;	 //  6x12 ASCII
-	    case '4':  BaseAdd=0x1DD780; n=16; h=16; w=8;  d=8;  c=2;  break;	 //  8x16 ASCII	
-	    case '5':  BaseAdd=0x1DFF00; n=48; h=24; w=12; d=12; c=3;  break;	 //  12x24 ASCII
-	 	case '6':  BaseAdd=0x1E5A50; n=64; h=32; w=16; d=16; c=4;  break;	 //  16x32 ASCII
-
-			}
-		
-	while((text[i]>0x00))
-	{	
-		 if(x>(128-d))
-	      {  y=y+c; 
-		     x=0; 
-			 	 }//溢出换行
-
-
-	   		if((text[i] >= 0x20) &&(text[i] <= 0x7E))
-		{						
-		    FontAddr = 	text[i]-0x20;
-			FontAddr = (unsigned long)((FontAddr*n)+BaseAdd);
-			
-			AddrHigh = (FontAddr&0xff0000)>>16;  /*地址的高8位,共24位*/
-			AddrMid = (FontAddr&0xff00)>>8;      /*地址的中8位,共24位*/
-			AddrLow = FontAddr&0xff;	     /*地址的低8位,共24位*/
-			ZK_Read_1_n(AddrHigh,AddrMid,AddrLow,FontBuf,n );/*取一个汉字的数据，存到"FontBuf[]"*/
-		  zk_map(Font_Map,FontBuf, h, w);	//数据变换
-			Display_Asc(zk_num,x,y);/*显示一个ascii到OLED上 */
-            i+=1;
-			x+=d;//下一个字坐标
-		 
-		}
-
-	}
-	
-}
 
 //code 字符指针开始
 //从字库中查找出字模
