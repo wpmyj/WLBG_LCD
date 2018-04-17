@@ -351,7 +351,7 @@
               <MiscControls>--C99</MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\include;..\BSP\LCD;..\BSP\text;..\BSP\timer</IncludePath>
+              <IncludePath>../Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\include;..\BSP\LCD;..\BSP\text;..\BSP\timer;..\STemWinLibrary522\Config;..\STemWinLibrary522\inc;..\STemWinLibrary522\Lib;..\STemWinLibrary522\OS</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -526,6 +526,31 @@
               <FileName>TIM.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\BSP\timer\TIM.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>STemWin_V522</GroupName>
+          <Files>
+            <File>
+              <FileName>GUIConf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\STemWinLibrary522\Config\GUIConf.c</FilePath>
+            </File>
+            <File>
+              <FileName>LCDConf_FlexColor_Template.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\STemWinLibrary522\Config\LCDConf_FlexColor_Template.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUI_X.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\STemWinLibrary522\OS\GUI_X.c</FilePath>
+            </File>
+            <File>
+              <FileName>STemWin522_CM3_Keil.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\STemWinLibrary522\Lib\STemWin522_CM3_Keil.lib</FilePath>
             </File>
           </Files>
         </Group>

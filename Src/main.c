@@ -42,11 +42,13 @@
 #include"HeadType.h"
 #include "lcd.h"
 #include "text.h"	
+#include "GUI.h"
 
+CRC_HandleTypeDef hcrc;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-
+void MX_CRC_Init(void);
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
 
@@ -58,27 +60,29 @@ static void MX_GPIO_Init(void);
 
 int main(void)
 {
-
   HAL_Init();
 	SystemClock_Config();
+	MX_CRC_Init();
 	ROM_GT30L_Init();
-	LCD_Init();
+//	LCD_Init();
+	GUI_Init();
 	MX_GPIO_Init();
 	TIM2_Config();
 	TIM3_Config();
 	delay_ms(200);
+	GUI_DispStringAt("MINI_STM32 STemWin test!",10,30);
   while (1)
   {
-		LCD_Clear(BLUE);
-		Show_Str_Mid(0,0,"我们是好孩子",16,320);
-	  Show_Str(20,20,6*32,"我们是好孩子",24,0);
-		Show_Str(40,50,6*32,"我们是好孩子",24,0);
-		Show_Str(100,100,16*6,"Hello",32,0);
-		LCD_ShowString(10,130,12*32,"World",24,0);
-		delay_ms(1000);
-		delay_ms(1000);
-		LCD_Clear(RED);
-		delay_ms(1000);
+//		LCD_Clear(BLUE);
+//		Show_Str_Mid(0,0,"我们是好孩子",16,320);
+//	  Show_Str(20,20,6*32,"我们是好孩子",24,0);
+//		Show_Str(40,50,6*32,"我们是好孩子",32,0);
+//		Show_Str(100,100,16*6,"Hello",32,0);
+//		LCD_ShowString(10,130,12*32,"World",24,0);
+//		delay_ms(1000);
+//		delay_ms(1000);
+//		LCD_Clear(RED);
+//		delay_ms(1000);
 
   }
   /* USER CODE END 3 */
@@ -199,6 +203,33 @@ void assert_failed(uint8_t* file, uint32_t line)
 }
 
 #endif
+
+
+
+void MX_CRC_Init(void)
+{
+  hcrc.Instance = CRC;
+  HAL_CRC_Init(&hcrc);
+}
+
+void HAL_CRC_MspInit(CRC_HandleTypeDef* hcrc)
+{
+
+  if(hcrc->Instance==CRC)
+  {
+    __HAL_RCC_CRC_CLK_ENABLE();
+  }
+}
+
+void HAL_CRC_MspDeInit(CRC_HandleTypeDef* hcrc)
+{
+
+  if(hcrc->Instance==CRC)
+  {
+    __HAL_RCC_CRC_CLK_DISABLE();
+  }
+} 
+/******************* (C) COPYRIGHT 2015-2020 ????????? *****END OF FILE****/
 
 /**
   * @}

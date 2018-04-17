@@ -68,8 +68,8 @@ typedef struct
 } LCD_TypeDef;
 //使用NOR/SRAM的 Bank1.sector4,地址位HADDR[27,26]=11 A10作为数据命令区分线 
 //注意设置时STM32内部会右移一位对其! 			    
-#define LCD_BASE        ((u32)(0x6C000000 | 0x000007FE))
-#define LCD             ((LCD_TypeDef *) LCD_BASE)
+#define LCD1_BASE        ((u32)(0x6C000000 | 0x000007FE))
+#define LCD1             ((LCD_TypeDef *) LCD_BASE)
 //////////////////////////////////////////////////////////////////////////////////
 	 
 //扫描方向定义
@@ -134,6 +134,8 @@ void LCD_ShowNum(u16 x,u16 y,u32 num,u8 len,u8 size);  						//显示一个数字
 void LCD_ShowxNum(u16 y,u16 x,u32 num,u8 len,u8 size,u8 mode);				//显示 数字
 void LCD_ShowString(u16 y,u16 x,u16 width,u8 *str,u8 size,u8 mode);		//显示一个字符串,12/16字体
 
+void LCD_WR_REG(u16 regval);
+void LCD_WR_DATA(u16 data);
 void LCD_WriteReg(u16 LCD_Reg, u16 LCD_RegValue);
 u16 LCD_ReadReg(u16 LCD_Reg);
 void LCD_WriteRAM_Prepare(void);
