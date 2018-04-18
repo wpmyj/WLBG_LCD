@@ -1,6 +1,7 @@
 #ifndef __TEXT_H__
 #define __TEXT_H__	 
 #include "stm32f1xx_hal.h"
+#include"HeadType.h"
 
 #define ROM_IN_Clr() HAL_GPIO_WritePin(GPIOC,GPIO_PIN_2,GPIO_PIN_RESET)
 #define ROM_IN_Set() HAL_GPIO_WritePin(GPIOC,GPIO_PIN_2,GPIO_PIN_SET)

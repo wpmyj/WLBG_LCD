@@ -57,7 +57,7 @@ void MX_CRC_Init(void);
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
-
+void GUIDEMO_Main(void);
 int main(void)
 {
   HAL_Init();
@@ -71,6 +71,8 @@ int main(void)
 	TIM3_Config();
 	delay_ms(200);
 	GUI_DispStringAt("MINI_STM32 STemWin test!",10,30);
+	GUI_DispStringAt("MINI_STM32 STemWin test!",20,46);
+	GUIDEMO_Main();
   while (1)
   {
 //		LCD_Clear(BLUE);

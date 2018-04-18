@@ -125,19 +125,19 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #endif
 
 #ifndef   SHOW_GUIDEMO_COLORBAR
-  #define SHOW_GUIDEMO_COLORBAR          (0)
+  #define SHOW_GUIDEMO_COLORBAR          (1)
 #endif
 
 #ifndef   SHOW_GUIDEMO_CURSOR
-  #define SHOW_GUIDEMO_CURSOR            (0)
+  #define SHOW_GUIDEMO_CURSOR            (1)
 #endif
 
 #ifndef   SHOW_GUIDEMO_GRAPH
-  #define SHOW_GUIDEMO_GRAPH             (0)
+  #define SHOW_GUIDEMO_GRAPH             (1)
 #endif
 
 #ifndef   SHOW_GUIDEMO_LISTVIEW
-  #define SHOW_GUIDEMO_LISTVIEW          (0)
+  #define SHOW_GUIDEMO_LISTVIEW          (1)
 #endif
 
 #ifndef   SHOW_GUIDEMO_SPEED
@@ -149,7 +149,7 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #endif
 
 #ifndef   SHOW_GUIDEMO_ICONVIEW
-  #define SHOW_GUIDEMO_ICONVIEW          (0)
+  #define SHOW_GUIDEMO_ICONVIEW          (1)
 #endif
 
 #ifndef   SHOW_GUIDEMO_RADIALMENU
@@ -161,7 +161,7 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #endif
 
 #ifndef   SHOW_GUIDEMO_AUTOMOTIVE
-  #define SHOW_GUIDEMO_AUTOMOTIVE        (0)
+  #define SHOW_GUIDEMO_AUTOMOTIVE        (1)
 #endif
 
 #ifndef   SHOW_GUIDEMO_TRANSPARENTDIALOG
@@ -169,7 +169,7 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #endif
 
 #ifndef   SHOW_GUIDEMO_AATEXT
-  #define SHOW_GUIDEMO_AATEXT            (0)
+  #define SHOW_GUIDEMO_AATEXT            (1)
 #endif
 
 #ifndef   SHOW_GUIDEMO_BARGRAPH

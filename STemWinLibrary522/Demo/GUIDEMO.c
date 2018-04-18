@@ -72,12 +72,12 @@ static const GUI_WIDGET_CREATE_INFO _aFrameWinControl[] = {
   { BUTTON_CreateIndirect,   "Halt",    GUI_ID_HALT,      2, 24, BUTTON_SIZE_X,  BUTTON_SIZE_Y,  0,          0 },
   { BUTTON_CreateIndirect,   "Next",    GUI_ID_NEXT,     36, 24, BUTTON_SIZE_X,  BUTTON_SIZE_Y,  0,          0 },
   { PROGBAR_CreateIndirect,  0,         GUI_ID_PROGBAR0,  2, 11, PROGBAR_SIZE_X, PROGBAR_SIZE_Y, WM_CF_HIDE, 0 },
-  { TEXT_CreateIndirect,     0,         GUI_ID_TEXT0,     2,  2, TEXT_SIZE_X,    TEXT_SIZE_Y,    0,          0 }
+//  { TEXT_CreateIndirect,     0,         GUI_ID_TEXT0,     2,  2, TEXT_SIZE_X,    TEXT_SIZE_Y,    0,          0 }
 };
 
 static const GUI_WIDGET_CREATE_INFO _aFrameWinInfo[] = {
   { FRAMEWIN_CreateIndirect, "STemWin Demo", 0,             0,  0, 0,              0,              0, 0 },
-  { TEXT_CreateIndirect,     "",           GUI_ID_TEXT0,  3,  3, 0,              0,              0, 0 }
+//  { TEXT_CreateIndirect,     "",           GUI_ID_TEXT0,  3,  3, 0,              0,              0, 0 }
 };
 
 /*********************************************************************
@@ -643,12 +643,12 @@ void GUIDEMO_ShowControlWin(void) {
 *       GUIDEMO_ShowInfo
 */
 void GUIDEMO_ShowInfo(const char * acInfo) {
-  TEXT_Handle hText;
+//  TEXT_Handle hText;
 
-  if (WM_IsVisible(_hDialogInfo)) {
-    hText = WM_GetDialogItem(_hDialogInfo, GUI_ID_TEXT0);
-    TEXT_SetText(hText, acInfo);
-  }
+//  if (WM_IsVisible(_hDialogInfo)) {
+//    hText = WM_GetDialogItem(_hDialogInfo, GUI_ID_TEXT0);
+//    TEXT_SetText(hText, acInfo);
+//  }
 }
 
 /*********************************************************************
@@ -713,17 +713,17 @@ void GUIDEMO_ShowIntro(const char * acTitle, const char * acDescription) {
 *       GUIDEMO_UpdateControlText
 */
 void GUIDEMO_UpdateControlText(void) {
-  TEXT_Handle hText;
+//  TEXT_Handle hText;
   char        acText[20] = { 0 };
 
-  hText = WM_GetDialogItem(_hDialogControl, GUI_ID_TEXT0);
+//  hText = WM_GetDialogItem(_hDialogControl, GUI_ID_TEXT0);
   GUIDEMO_AddStringToString(acText, "Demo ");
   GUIDEMO_AddIntToString   (acText, _iDemo + 1);
   GUIDEMO_AddStringToString(acText, ".");
   GUIDEMO_AddIntToString   (acText, _iDemoMinor);
   GUIDEMO_AddStringToString(acText, "/");
   GUIDEMO_AddIntToString   (acText, _GUIDemoConfig.NumDemos - 1);
-  TEXT_SetText             (hText,  acText);
+//  TEXT_SetText             (hText,  acText);
 }
 
 /*********************************************************************
@@ -743,52 +743,52 @@ void GUIDEMO_Wait(int TimeWait) {
 *       GUIDEMO_Main
 */
 void GUIDEMO_Main(void) {
-  FRAMEWIN_SKINFLEX_PROPS Framewin_Props;
-#if GUIDEMO_USE_AUTO_BK
-  int                     NumFreeBytes;
-  int                     BitsPerPixel;
-#endif
+//  FRAMEWIN_SKINFLEX_PROPS Framewin_Props;
+//#if GUIDEMO_USE_AUTO_BK
+//  int                     NumFreeBytes;
+//  int                     BitsPerPixel;
+//#endif
 
-  GUI_MEMDEV_SetAnimationCallback(_cbEffect, (void *)&_Pressed);
-  WM_SetCallback(WM_HBKWIN, _cbBk);
-  BUTTON_SetReactOnLevel();
-  FRAMEWIN_GetSkinFlexProps(&Framewin_Props, FRAMEWIN_SKINFLEX_PI_ACTIVE);
-  Framewin_Props.Radius = 0;
-  FRAMEWIN_SetSkinFlexProps(&Framewin_Props, FRAMEWIN_SKINFLEX_PI_ACTIVE);
-  FRAMEWIN_GetSkinFlexProps(&Framewin_Props, FRAMEWIN_SKINFLEX_PI_INACTIVE);
-  Framewin_Props.Radius = 0;
-  FRAMEWIN_SetSkinFlexProps(&Framewin_Props, FRAMEWIN_SKINFLEX_PI_INACTIVE);
-  FRAMEWIN_SetDefaultSkin  (_FRAMEWIN_DrawSkinFlex);
-  PROGBAR_SetDefaultSkin   (PROGBAR_SKIN_FLEX);
-  BUTTON_SetDefaultSkin    (BUTTON_SKIN_FLEX);
-  SCROLLBAR_SetDefaultSkin (SCROLLBAR_SKIN_FLEX);
-  SLIDER_SetDefaultSkin    (SLIDER_SKIN_FLEX);
-  HEADER_SetDefaultSkin    (HEADER_SKIN_FLEX);
-  GUI_SetTextMode          (GUI_TM_TRANS);
-  GUIDEMO_Config(&_GUIDemoConfig);
-  #if GUIDEMO_USE_VNC
-    if (GUIDEMO_GetConfFlag(GUIDEMO_CF_USE_VNC)) {
-      _GUIDemoConfig.pGUI_VNC_X_StartServer(0, 0);
-    }
-  #endif
-  #if GUIDEMO_USE_AUTO_BK
-    //
-    // Determine if HW has enough memory to draw the gradient circle as background
-    //
-    BitsPerPixel = LCD_GetBitsPerPixel();
-    if ((BitsPerPixel >= 16) && GUIDEMO_GetConfFlag(GUIDEMO_CF_USE_AUTO_BK)) {
-      NumFreeBytes = GUI_ALLOC_GetNumFreeBytes();
-      if (NumFreeBytes > NUMBYTES_NEEDED) {
-        _pfDrawBk = _DrawBkCircle;
-      } else {
-        _pfDrawBk = _DrawBk;
-      }
-    } else
-  #endif
-    {
-      _pfDrawBk = _DrawBkSimple;
-    }
-  GUIDEMO_SetDrawLogo(1);
+//  GUI_MEMDEV_SetAnimationCallback(_cbEffect, (void *)&_Pressed);
+//  WM_SetCallback(WM_HBKWIN, _cbBk);
+//  BUTTON_SetReactOnLevel();
+//  FRAMEWIN_GetSkinFlexProps(&Framewin_Props, FRAMEWIN_SKINFLEX_PI_ACTIVE);
+//  Framewin_Props.Radius = 0;
+//  FRAMEWIN_SetSkinFlexProps(&Framewin_Props, FRAMEWIN_SKINFLEX_PI_ACTIVE);
+//  FRAMEWIN_GetSkinFlexProps(&Framewin_Props, FRAMEWIN_SKINFLEX_PI_INACTIVE);
+//  Framewin_Props.Radius = 0;
+//  FRAMEWIN_SetSkinFlexProps(&Framewin_Props, FRAMEWIN_SKINFLEX_PI_INACTIVE);
+//  FRAMEWIN_SetDefaultSkin  (_FRAMEWIN_DrawSkinFlex);
+//  PROGBAR_SetDefaultSkin   (PROGBAR_SKIN_FLEX);
+//  BUTTON_SetDefaultSkin    (BUTTON_SKIN_FLEX);
+//  SCROLLBAR_SetDefaultSkin (SCROLLBAR_SKIN_FLEX);
+//  SLIDER_SetDefaultSkin    (SLIDER_SKIN_FLEX);
+//  HEADER_SetDefaultSkin    (HEADER_SKIN_FLEX);
+//  GUI_SetTextMode          (GUI_TM_TRANS);
+//  GUIDEMO_Config(&_GUIDemoConfig);
+//  #if GUIDEMO_USE_VNC
+//    if (GUIDEMO_GetConfFlag(GUIDEMO_CF_USE_VNC)) {
+//      _GUIDemoConfig.pGUI_VNC_X_StartServer(0, 0);
+//    }
+//  #endif
+//  #if GUIDEMO_USE_AUTO_BK
+//    //
+//    // Determine if HW has enough memory to draw the gradient circle as background
+//    //
+//    BitsPerPixel = LCD_GetBitsPerPixel();
+//    if ((BitsPerPixel >= 16) && GUIDEMO_GetConfFlag(GUIDEMO_CF_USE_AUTO_BK)) {
+//      NumFreeBytes = GUI_ALLOC_GetNumFreeBytes();
+//      if (NumFreeBytes > NUMBYTES_NEEDED) {
+//        _pfDrawBk = _DrawBkCircle;
+//      } else {
+//        _pfDrawBk = _DrawBk;
+//      }
+//    } else
+//  #endif
+//    {
+//      _pfDrawBk = _DrawBkSimple;
+//    }
+//  GUIDEMO_SetDrawLogo(1);
   while (1) {
     _Main();
   }
