@@ -106,8 +106,9 @@ Purpose     : Display controller configuration (single layer)
 * Function description:
 *   Sets display register
 */
-static void LcdWriteReg(U16 Data) {
+static void LcdWriteReg(U8 Data) {
   // ... TBD by user
+//	LCD_WR_REG((Data>>8)&0x00ff);  //modify by xd
 	LCD_WR_REG(Data);  //modify by xd
 }
 
@@ -118,8 +119,9 @@ static void LcdWriteReg(U16 Data) {
 * Function description:
 *   Writes a value to a display register
 */
-static void LcdWriteData(U16 Data) {
+static void LcdWriteData(U8 Data) {
   // ... TBD by user
+//	LCD_WR_DATA((Data>>8)&0x00ff);  //modify by xd
 	LCD_WR_DATA(Data);  //modify by xd
 }
 
@@ -130,10 +132,11 @@ static void LcdWriteData(U16 Data) {
 * Function description:
 *   Writes multiple values to a display register.
 */
-static void LcdWriteDataMultiple(U16 * pData, int NumItems) {
+static void LcdWriteDataMultiple(U8 * pData, int NumItems) {
   while (NumItems--) {
     // ... TBD by user
-	LCD_WR_DATA(*pData++);   //modify by xd
+//	LCD_WR_DATA((*pData>>8)&0x00ff);  //modify by xd
+	LCD_WR_DATA(*pData++);  //modify by xd
   }
 }
 
@@ -144,7 +147,7 @@ static void LcdWriteDataMultiple(U16 * pData, int NumItems) {
 * Function description:
 *   Reads multiple values from a display register.
 */
-static void LcdReadDataMultiple(U16 * pData, int NumItems) {
+static void LcdReadDataMultiple(U8 * pData, int NumItems) {
   while (NumItems--) {
     // ... TBD by user
 //		*pData++ = LCD_RD_REG_DATA(LCD_REG_34);   //modify by xd
@@ -191,11 +194,11 @@ void LCD_X_Config(void) {
   //
   // Set controller and operation mode
   //
-  PortAPI.pfWrite16_A0  = LcdWriteReg;
-  PortAPI.pfWrite16_A1  = LcdWriteData;
-  PortAPI.pfWriteM16_A1 = LcdWriteDataMultiple;
-  PortAPI.pfReadM16_A1  = LcdReadDataMultiple;
-  GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66708, GUIDRV_FLEXCOLOR_M16C0B16);
+  PortAPI.pfWrite8_A0  = LcdWriteReg;
+  PortAPI.pfWrite8_A1  = LcdWriteData;
+  PortAPI.pfWriteM8_A1 = LcdWriteDataMultiple;
+  PortAPI.pfReadM8_A1  = LcdReadDataMultiple;
+  GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66709, GUIDRV_FLEXCOLOR_M16C0B8);
 
 }
 
