@@ -64,27 +64,29 @@ int main(void)
 	SystemClock_Config();
 	MX_CRC_Init();
 	ROM_GT30L_Init();
-//	LCD_Init();
-	GUI_Init();
+	LCD_Init();
+//	GUI_Init();
 	MX_GPIO_Init();
 	TIM2_Config();
 	TIM3_Config();
 	delay_ms(200);
-	GUI_DispStringAt("MINI_STM32 STemWin test!",10,30);
-	GUI_DispStringAt("MINI_STM32 STemWin test!",20,46);
-	GUIDEMO_Main();
+//	GUI_DispStringAt("MINI_STM32 STemWin test!",10,30);
+//	GUI_DispStringAt("MINI_STM32 STemWin test!",20,46);
+//	GUIDEMO_Main();
   while (1)
   {
-//		LCD_Clear(BLUE);
-//		Show_Str_Mid(0,0,"我们是好孩子",16,320);
-//	  Show_Str(20,20,6*32,"我们是好孩子",24,0);
-//		Show_Str(40,50,6*32,"我们是好孩子",32,0);
-//		Show_Str(100,100,16*6,"Hello",32,0);
-//		LCD_ShowString(10,130,12*32,"World",24,0);
-//		delay_ms(1000);
-//		delay_ms(1000);
-//		LCD_Clear(RED);
-//		delay_ms(1000);
+		LCD_Clear(BLUE);
+		Show_Str_Mid(0,0,"我们是好孩子",16,320);
+	  Show_Str(20,20,6*32,"我们是好孩子",24,0);
+		Show_Str(40,50,6*32,"我们是好孩子",32,0);
+		Show_Str(100,100,16*6,"Hello",32,0);
+		LCD_ShowString(10,130,12*32,"World",24,0);
+		delay_ms(1000);
+		delay_ms(1000);
+		LCD_Clear(RED);
+		Show_Str(50,100,64,"我",64,0);
+		Show_Str(50+64,100,80,"我",80,0);
+		delay_ms(1000);
 
   }
   /* USER CODE END 3 */

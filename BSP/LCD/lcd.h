@@ -2,7 +2,11 @@
 #define __LCD_H		 
 #include "stdlib.h"
 #include"HeadType.h"
-	 
+#include "GT60L16M2K4.h"
+
+#define 	GT30L32S4W  		 5
+#define 	GT60L16M2K4			 10
+#define 	GTXXX			       GT30L32S4W
 //#define RST (1<<7) 			// PB7
 //#define WR (1<<5)  			// PA3
 //#define RD (1<<4)  			// PA2
