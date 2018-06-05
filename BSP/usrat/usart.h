@@ -1,7 +1,7 @@
 #ifndef __USART_H
 #define __USART_H
 
-#include "stm32f10x.h"
+#include "stm32f1xx_hal.h"
 #include "stdio.h"
 
 #define       RE485_SEND    	  GPIO_SetBits(GPIOA, GPIO_Pin_11)
@@ -24,9 +24,9 @@ void USART3_Puts(char * str);
 void USART1_Do_Tx(void );
 void USART2_Do_Tx(void );
 void USART3_Do_Tx(void );
-void USART1_Do_Rx(u8 rxdata);
-void USART2_Do_Rx(u8 rxdata);
-void USART3_Do_Rx(u8 rxdata);
+void USART1_Do_Rx(unsigned char rxdata);
+void USART2_Do_Rx(unsigned char rxdata);
+void USART3_Do_Rx(unsigned char rxdata);
 //void Respond_Host_Comm(void);
 //void Dispose_Data_For_Host(void);
 #endif

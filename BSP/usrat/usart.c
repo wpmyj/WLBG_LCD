@@ -2,8 +2,8 @@
 
 /*串口1管脚重映射*/
 #define USART1REMAP 0
-
-
+#define RXBUFFERSIZE  512
+u8 aRxBuffer[RXBUFFERSIZE];
 Usart_Type Usart1_Control_Data;
 Usart_Type Usart2_Control_Data;
 Usart_Type Usart3_Control_Data;
@@ -11,8 +11,73 @@ char Auto_Frame_Time1;
 char Auto_Frame_Time2;
 char Auto_Frame_Time3;
 
+UART_HandleTypeDef huart1;
 
 
+void HAL_UART_MspInit(UART_HandleTypeDef *huart)
+{
+
+  GPIO_InitTypeDef GPIO_InitStruct;
+  if(huart->Instance==USART1)
+  {
+
+		__HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_USART1_CLK_ENABLE();
+
+    GPIO_InitStruct.Pin = GPIO_PIN_9;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_10;
+    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  }
+}
+
+void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
+{
+
+  if(huart->Instance==USART1)
+  {
+    __HAL_RCC_USART1_CLK_DISABLE();
+
+    HAL_GPIO_DeInit(GPIOA,GPIO_PIN_9);
+    HAL_GPIO_DeInit(GPIOA,GPIO_PIN_10);
+    
+    HAL_NVIC_DisableIRQ(USART1_IRQn);
+  }
+}
+
+
+static void MX_NVIC_USART1_UART_Init(void)
+{
+  /* USART1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(USART1_IRQn, 0, 2);
+  HAL_NVIC_EnableIRQ(USART1_IRQn);
+}
+
+/* USART1 init function */
+static void MX_USART1_UART_Init(void)
+{
+   __HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_USART1_CLK_ENABLE();
+	
+  huart1.Instance = USART1;
+  huart1.Init.BaudRate = 19200;
+  huart1.Init.WordLength = UART_WORDLENGTH_8B;
+  huart1.Init.StopBits = UART_STOPBITS_1;
+  huart1.Init.Parity = UART_PARITY_NONE;
+  huart1.Init.Mode = UART_MODE_TX_RX;
+  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+//  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+  
+	HAL_UART_Init(&huart1);
+  MX_NVIC_USART1_UART_Init();
+	HAL_UART_Receive_IT(&huart1, (u8 *)aRxBuffer, RXBUFFERSIZE);
+
+}
 //=============================================================================
 //函数名称:Init_USART1
 //功能概要:USART1 初始化串口相关参数
@@ -123,10 +188,9 @@ static void USART3_Interrupts_Config(void)
 //=============================================================================
 void USART1_Config(void)
 {
-	
-	
 	USART1_Interrupts_Config();
 	Init_USART1();
+	MX_USART1_UART_Init();
 }
 
  //=============================================================================
@@ -434,4 +498,13 @@ void USART3_Do_Rx(u8 rxdata)
         return;
     }           
 }
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+
+}
+
+
+
+
 

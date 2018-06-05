@@ -60,7 +60,7 @@ void MX_CRC_Init(void);
 void GUIDEMO_Main(void);
 int main(void)
 {
-  HAL_Init();
+    HAL_Init();
 	SystemClock_Config();
 	MX_CRC_Init();
 	ROM_GT30L_Init();
@@ -69,6 +69,7 @@ int main(void)
 	MX_GPIO_Init();
 	TIM2_Config();
 	TIM3_Config();
+	USART1_Config();
 	delay_ms(200);
 //	GUI_DispStringAt("MINI_STM32 STemWin test!",10,30);
 //	GUI_DispStringAt("MINI_STM32 STemWin test!",20,46);

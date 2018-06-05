@@ -4,7 +4,7 @@
 #include "stm32f1xx_hal.h"
 #include <stdio.h>
 #include <string.h>	
-
+#include "usart.h"
 
 /*************Typedef datatype start*******************/
 typedef char int8;
@@ -269,7 +269,7 @@ extern unsigned char send_cark_flag;
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
-
+extern UART_HandleTypeDef huart1;
 /*************extern variable end*******************/
 
 /*************function start*******************/

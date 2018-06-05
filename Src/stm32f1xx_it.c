@@ -187,6 +187,18 @@ void TIM4_IRQHandler(void)
 {
 	HAL_TIM_IRQHandler(&htim4);
 }
+void USART1_IRQHandler(void)
+{
+	UART_HandleTypeDef *huart =&huart1;
+	
+	if(huart->RxState == HAL_UART_STATE_BUSY_RX)
+	{
+		USART1_Do_Rx((uint8_t)(huart->Instance->DR & (uint8_t)0x00FF));
+	}
+  HAL_UART_IRQHandler(&huart1);
+}
+
+
 /******************************************************************************/
 /* STM32F1xx Peripheral Interrupt Handlers                                    */
 /* Add here the Interrupt Handlers for the used peripherals.                  */
