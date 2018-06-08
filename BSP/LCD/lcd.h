@@ -6,7 +6,7 @@
 
 #define 	GT30L32S4W  		 5
 #define 	GT60L16M2K4			 10
-#define 	GTXXX			       GT30L32S4W
+#define 	GTXXX			       GT60L16M2K4
 //#define RST (1<<7) 			// PB7
 //#define WR (1<<5)  			// PA3
 //#define RD (1<<4)  			// PA2

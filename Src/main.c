@@ -77,16 +77,17 @@ int main(void)
   while (1)
   {
 		LCD_Clear(BLUE);
-		Show_Str_Mid(0,0,"我们是好孩子",16,320);
 	  Show_Str(20,20,6*32,"我们是好孩子",24,0);
 		Show_Str(40,50,6*32,"我们是好孩子",32,0);
 		Show_Str(100,100,16*6,"Hello",32,0);
-		LCD_ShowString(10,130,12*32,"World",24,0);
+//		LCD_ShowString(10,130,12*32,"World",24,0);
+		Show_Str(32,162,64*4,"东A2区",64,0);
 		delay_ms(1000);
 		delay_ms(1000);
 		LCD_Clear(RED);
-		Show_Str(50,100,64,"我",64,0);
-		Show_Str(50+64,100,80,"我",80,0);
+		Show_Str(40,0,80*4,"东12区",80,0);
+		Show_Str(0,80,80*4," 住院 ",80,0);
+		Show_Str(0,160,80*4,"1000袋",80,0);
 		delay_ms(1000);
 
   }
