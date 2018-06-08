@@ -214,7 +214,11 @@ void Show_Font(u16 x,u16 y,u8 *font,u8 size,u8 mode)
 	}else if(GTXXX == GT60L16M2K4){
 		hzcode_high = *font++;
 		hzcode_low = *font;
-		get_font(pBits,0x03,hzcode_high,hzcode_low,size,size,size);
+		if(size == 24){
+			get_font(pBits,0x05,hzcode_high,hzcode_low,32,size,32);
+		}else{
+			get_font(pBits,0x05,hzcode_high,hzcode_low,size,size,size);
+		}
 	}
 	for(t=0;t<csize;t++)
 	{   	
@@ -222,12 +226,7 @@ void Show_Font(u16 x,u16 y,u8 *font,u8 size,u8 mode)
 			temp=dzk[t];			//得到点阵数据 
 		}else if(GTXXX == GT60L16M2K4){
 			temp = pBits[t];
-		}
-//		else if(size == 64){
-//			temp = hz64X64[t];
-//		}else if(size == 80){
-//			temp = hz80X80[t];
-//		}			
+		}	
 		for(t1=0;t1<8;t1++)
 		{
 			if(temp&0x80)LCD_Fast_DrawPoint(x,y,POINT_COLOR);
@@ -352,6 +351,7 @@ void Show_Ascchar(u16 y,u16 x,u8 Ascchar,u8 size,u8 mode)
 	static u16 t,i,j,csize;
 	if(size == 24){
 		csize = 48;
+		row = csize/24;
 	}else if(size <= 32){
 		csize=(size/8+((size%8)?1:0))*(size/2);//得到字体一个字符对应点阵集所占的字节数
 		row = csize/size;
@@ -368,10 +368,18 @@ void Show_Ascchar(u16 y,u16 x,u8 Ascchar,u8 size,u8 mode)
 	}else if(GTXXX == GT60L16M2K4){
 		hzcode_high = 0X00;
 		hzcode_low = Ascchar;
-		if(size <= 32){
+		if(size == 16){
+			get_font(pBits,0x02,hzcode_high,hzcode_low,size/2,size,size);
+		}else if(size == 24){
+			get_font(pBits,0x01,hzcode_high,hzcode_low,size/2,size,size);
+		}else if(size == 32){
 			get_font(pBits,0x04,hzcode_high,hzcode_low,size/2,size,size);
 		}else{
-			get_font(pBits,0x0A,hzcode_high,hzcode_low,size,size,size);
+			if((hzcode_low >=0x30)&&(hzcode_low <=0x39)){
+				get_font(pBits,0x12,hzcode_high,hzcode_low,size,size,size);
+			}else{
+				get_font(pBits,0x0B,hzcode_high,hzcode_low,size,size,size);
+			}
 		}
 	}
 	for(j = 0;j< size;j++){
@@ -384,25 +392,16 @@ void Show_Ascchar(u16 y,u16 x,u8 Ascchar,u8 size,u8 mode)
 			}                         
 			for(t1=0;t1<8;t1++)
 			{
-				if(temp&0x80)LCD_Fast_DrawPoint(x,y,POINT_COLOR);
-				else if((mode==0)||(mode==2))LCD_Fast_DrawPoint(x,y,BACK_COLOR); 
+					if(temp&0x80)LCD_Fast_DrawPoint(x,y,POINT_COLOR);
+					else if((mode==0)||(mode==2))LCD_Fast_DrawPoint(x,y,BACK_COLOR); 
 				temp<<=1;
 				y++;
-				if(size <= 32){
 					if((y-y0)==size/2)
 					{
 						y=y0;
 						x++;
 						break;
 					}
-				}else{
-				if((y-y0)==size/2)
-					{
-						y=y0;
-						x++;
-						break;
-					}
-				}
 			}  	 
 		}  
 	}
@@ -558,6 +557,7 @@ void zoom_hz(unsigned char *hzbuf,unsigned char *fontbuf,int w,int h,int xscal)
                 for(x=0;x<w;x++)
                 {
                         c1 = c2 = c3 = c4 = 0;
+									      c4 =c4;
                         wbit = x+y*w;
                         c = ((*(hzbuf+(wbit>>3))>>(7^(wbit&0x07)))&0x01);
                         if ( !c )

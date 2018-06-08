@@ -76,18 +76,20 @@ int main(void)
 //	GUIDEMO_Main();
   while (1)
   {
-		LCD_Clear(BLUE);
-	  Show_Str(20,20,6*32,"我们是好孩子",24,0);
+		LCD_Clear(BLACK);
+	  Show_Str(20,20,16*2,"你好",16,0);
+		Show_Str(50,20,24*6,"我们是好孩子",24,0);
 		Show_Str(40,50,6*32,"我们是好孩子",32,0);
 		Show_Str(100,100,16*6,"Hello",32,0);
-//		LCD_ShowString(10,130,12*32,"World",24,0);
-		Show_Str(32,162,64*4,"东A2区",64,0);
+		Show_Str(10,130,12*6,"World",24,0);
+		Show_Str(10 + 12*6,130,8*6,"World",16,0);
+		Show_Str(32,162,64*4,"东ABC2区",64,0);
 		delay_ms(1000);
 		delay_ms(1000);
-		LCD_Clear(RED);
+		LCD_Clear(BLACK);
 		Show_Str(40,0,80*4,"东12区",80,0);
-		Show_Str(0,80,80*4," 住院 ",80,0);
-		Show_Str(0,160,80*4,"1000袋",80,0);
+		Show_Str(80,80,80*4," 住院 ",80,0);
+		Show_Str(0,160,80*4,"(2096)袋",80,0);
 		delay_ms(1000);
 
   }
