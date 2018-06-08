@@ -195,7 +195,7 @@ void Get_HzMat(unsigned char *code,unsigned char *mat,u8 size)
 //font:汉字GBK码
 //size:字体大小
 //mode:0,正常显示,1,叠加显示	   
-void Show_Font(u16 x,u16 y,u8 *font,u8 size,u8 mode)
+void Show_Font(u16 x,u16 y,u8 *font,u16 backcolor,u16 pointcolor,u8 size,u8 mode)
 {
 	u8 temp,t1;
 	u16 i,t;
@@ -229,8 +229,8 @@ void Show_Font(u16 x,u16 y,u8 *font,u8 size,u8 mode)
 		}	
 		for(t1=0;t1<8;t1++)
 		{
-			if(temp&0x80)LCD_Fast_DrawPoint(x,y,POINT_COLOR);
-			else if((mode==0)||(mode==2))LCD_Fast_DrawPoint(x,y,BACK_COLOR); 
+			if(temp&0x80)LCD_Fast_DrawPoint(x,y,pointcolor);
+			else if((mode==0)||(mode==2))LCD_Fast_DrawPoint(x,y,backcolor); 
 			temp<<=1;
 			y++;
 			if((y-y0)==size)
@@ -249,7 +249,7 @@ void Show_Font(u16 x,u16 y,u8 *font,u8 size,u8 mode)
 //str  :字符串
 //size :字体大小
 //mode:0,非叠加方式;1,叠加方式    	   		   
-void Show_Str(u16 y,u16 x,u16 width,u8*str,u8 size,u8 mode)
+void Show_Str(u16 y,u16 x,u16 width,u8*str,u16 backcolor,u16 pointcolor,u8 size,u8 mode)
 {					
 	u16 x0=x;
 	u16 y0=y;	
@@ -272,7 +272,7 @@ void Show_Str(u16 y,u16 x,u16 width,u8*str,u8 size,u8 mode)
 		            str++; 
 		        }else {
 //							LCD_ShowChar(y,x,*str,size,mode);//有效部分写入 
-							Show_Ascchar(y,x,*str,size,mode);
+							Show_Ascchar(y,x,*str, backcolor,pointcolor,size,mode);
 						}
 						str++; 
 		        y+=size/2; //字符,为全字的一半 
@@ -284,7 +284,7 @@ void Show_Str(u16 y,u16 x,u16 width,u8*str,u8 size,u8 mode)
 							y=y0;		  
 						}
 	        if((x>(x0+height-size))&&(mode<2))break;//越界返回  						     
-	        Show_Font(x,y,str,size,mode); //显示这个汉字,空心显示 
+	        Show_Font(x,y,str, backcolor,pointcolor,size,mode); //显示这个汉字,空心显示 
 	        str+=2; 
 	        y+=size;//下一个汉字偏移	    
         }						 
@@ -293,16 +293,16 @@ void Show_Str(u16 y,u16 x,u16 width,u8*str,u8 size,u8 mode)
 //在指定宽度的中间显示字符串
 //如果字符长度超过了len,则用Show_Str显示
 //len:指定要显示的宽度			  
-void Show_Str_Mid(u16 y,u16 x,u8*str,u8 size,u16 len)
+void Show_Str_Mid(u16 y,u16 x,u8*str,u16 backcolor,u16 pointcolor,u8 size,u16 len)
 {
 	u16 strlenth=0;
   strlenth=strlen((const char*)str);
 	strlenth*=size/2;
-	if(strlenth>len)Show_Str(y,x,lcddev.width,str,size,1);
+	if(strlenth>len)Show_Str(y,x,lcddev.width,str,backcolor,pointcolor,size,1);
 	else
 	{
 			strlenth=(len-strlenth)/2;
-	    Show_Str(strlenth+y,x,lcddev.width,str,size,1);
+	    Show_Str(strlenth+y,x,lcddev.width,str,backcolor,pointcolor,size,1);
 	}
 }   
 
@@ -343,7 +343,7 @@ void Get_AscMat(unsigned char *code,unsigned char *mat,u8 size)
 		}	
 	} 		  
 }  
-void Show_Ascchar(u16 y,u16 x,u8 Ascchar,u8 size,u8 mode)
+void Show_Ascchar(u16 y,u16 x,u8 Ascchar,u16 backcolor,u16 pointcolor,u8 size,u8 mode)
 {
 	u8 temp,t1,hzcode_high,hzcode_low;
 	u16 row,y0=y;
@@ -375,7 +375,7 @@ void Show_Ascchar(u16 y,u16 x,u8 Ascchar,u8 size,u8 mode)
 		}else if(size == 32){
 			get_font(pBits,0x04,hzcode_high,hzcode_low,size/2,size,size);
 		}else{
-			if((hzcode_low >=0x30)&&(hzcode_low <=0x39)){
+			if(((hzcode_low >=0x30)&&(hzcode_low <=0x39))||((hzcode_low >=0x28)&&(hzcode_low <=0x29))){
 				get_font(pBits,0x12,hzcode_high,hzcode_low,size,size,size);
 			}else{
 				get_font(pBits,0x0B,hzcode_high,hzcode_low,size,size,size);
@@ -392,8 +392,8 @@ void Show_Ascchar(u16 y,u16 x,u8 Ascchar,u8 size,u8 mode)
 			}                         
 			for(t1=0;t1<8;t1++)
 			{
-					if(temp&0x80)LCD_Fast_DrawPoint(x,y,POINT_COLOR);
-					else if((mode==0)||(mode==2))LCD_Fast_DrawPoint(x,y,BACK_COLOR); 
+					if(temp&0x80)LCD_Fast_DrawPoint(x,y,pointcolor);
+					else if((mode==0)||(mode==2))LCD_Fast_DrawPoint(x,y,backcolor); 
 				temp<<=1;
 				y++;
 					if((y-y0)==size/2)

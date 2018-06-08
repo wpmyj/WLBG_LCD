@@ -17,9 +17,9 @@
 
 void ROM_GT30L_Init(void);
 void Get_HzMat(unsigned char *code,unsigned char *mat,u8 size);			//得到汉字的点阵码
-void Show_Font(u16 x,u16 y,u8 *font,u8 size,u8 mode);					//在指定位置显示一个汉字
-void Show_Str(u16 y,u16 x,u16 width,u8*str,u8 size,u8 mode);	//在指定位置显示一个字符串 
-void Show_Str_Mid(u16 y,u16 x,u8*str,u8 size,u16 len);
+void Show_Font(u16 x,u16 y,u8 *font,u16 backcolor,u16 pointcolor,u8 size,u8 mode);					//在指定位置显示一个汉字
+void Show_Str(u16 y,u16 x,u16 width,u8*str,u16 backcolor,u16 pointcolor,u8 size,u8 mode);	//在指定位置显示一个字符串 
+void Show_Str_Mid(u16 y,u16 x,u8*str,u16 backcolor,u16 pointcolor,u8 size,u16 len);
 
 
 //字库函数
@@ -44,7 +44,7 @@ void zk_map(  unsigned char *getdate, unsigned char *putdata, unsigned char high
 void Set_Pos(unsigned char x, unsigned char y);
 void Set_Start_Page(unsigned char d);
 void Set_Start_Column(unsigned char d);
-void Show_Ascchar(u16 y,u16 x,u8 Ascchar,u8 size,u8 mode);
+void Show_Ascchar(u16 y,u16 x,u8 Ascchar,u16 backcolor,u16 pointcolor,u8 size,u8 mode);
 
 #endif
 

@@ -77,19 +77,21 @@ int main(void)
   while (1)
   {
 		LCD_Clear(BLACK);
-	  Show_Str(20,20,16*2,"你好",16,0);
-		Show_Str(50,20,24*6,"我们是好孩子",24,0);
-		Show_Str(40,50,6*32,"我们是好孩子",32,0);
-		Show_Str(100,100,16*6,"Hello",32,0);
-		Show_Str(10,130,12*6,"World",24,0);
-		Show_Str(10 + 12*6,130,8*6,"World",16,0);
-		Show_Str(32,162,64*4,"东ABC2区",64,0);
+	  Show_Str(20,20,16*2,"你好",BACK_COLOR,POINT_COLOR,16,0);
+		Show_Str(50,20,24*6,"我们是好孩子",BACK_COLOR,POINT_COLOR,24,0);
+		Show_Str(40,50,6*32,"我们是好孩子",BACK_COLOR,POINT_COLOR,32,0);
+		Show_Str(100,100,16*6,"Hello",BACK_COLOR,POINT_COLOR,32,0);
+		Show_Str(10,130,12*6,"World",BACK_COLOR,POINT_COLOR,24,0);
+		Show_Str(10 + 12*6,130,8*6,"World",BACK_COLOR,POINT_COLOR,16,0);
+		Show_Str(32,162,64*4,"东ABC2区",BACK_COLOR,POINT_COLOR,64,0);
 		delay_ms(1000);
 		delay_ms(1000);
 		LCD_Clear(BLACK);
-		Show_Str(40,0,80*4,"东12区",80,0);
-		Show_Str(80,80,80*4," 住院 ",80,0);
-		Show_Str(0,160,80*4,"(2096)袋",80,0);
+		POINT_COLOR = WHITE;
+		Show_Str(40,0,80*4,"东12区",BACK_COLOR,POINT_COLOR,80,0);
+		Show_Str(80,80,80*4," 住院 ",BACK_COLOR,POINT_COLOR,80,0);
+		POINT_COLOR = RED;
+		Show_Str(0,160,80*4,"(2096)袋",BACK_COLOR,POINT_COLOR,80,0);
 		delay_ms(1000);
 
   }
