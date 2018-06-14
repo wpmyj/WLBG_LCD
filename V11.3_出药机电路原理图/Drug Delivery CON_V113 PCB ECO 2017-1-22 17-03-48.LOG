@@ -1,0 +1,15 @@
+Removed Pin From Net: NetName=ALM Pin=U5-8
+Removed Pin From Net: NetName=NetR28_1 Pin=U5-9
+Added Pin To Net: NetName=PULS Pin=U5-5
+Added Pin To Net: NetName=NetU5_4 Pin=U5-6
+Change Net Name : Old Net Name=NetU5_4 New Net Name=NetU5_6
+Removed Pin From Net: NetName=PULS Pin=U5-3
+Added Pin To Net: NetName=NetR28_1 Pin=U5-3
+Removed Pin From Net: NetName=EDM Pin=U5-10
+Added Pin To Net: NetName=FEEDBACK PLUS Pin=U5-10
+Removed Pin From Net: NetName=NetR29_1 Pin=U5-11
+Added Pin To Net: NetName=NetC20_1 Pin=U5-11
+Removed Pin From Net: NetName=FEEDBACK PLUS Pin=U5-12
+Added Pin To Net: NetName=EDM Pin=U5-12
+Removed Pin From Net: NetName=NetC20_1 Pin=U5-13
+Added Pin To Net: NetName=NetR29_1 Pin=U5-13

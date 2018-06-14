@@ -1,0 +1,156 @@
+Removed Pin From Net: NetName=+3.3V Pin=J1-1
+Removed Pin From Net: NetName=GND Pin=J1-2
+Removed Pin From Net: NetName=JNTRST Pin=J1-3
+Removed Pin From Net: NetName=JTDI Pin=J1-4
+Removed Pin From Net: NetName=JTMS Pin=J1-5
+Removed Pin From Net: NetName=JTDO Pin=J1-6
+Removed Pin From Net: NetName=JTCK Pin=J1-7
+Removed Pin From Net: NetName=RESET Pin=J1-8
+Removed Pin From Net: NetName=DC24V Pin=P13-3
+Removed Pin From Net: NetName=DC24V0 Pin=P13-4
+Removed Pin From Net: NetName=GND Pin=R6-1
+Removed Pin From Net: NetName=JTCK Pin=R6-2
+Removed Pin From Net: NetName=JTMS Pin=R7-1
+Removed Pin From Net: NetName=+3.3V Pin=R7-2
+Removed Pin From Net: NetName=JTDO Pin=R8-1
+Removed Pin From Net: NetName=+3.3V Pin=R8-2
+Removed Pin From Net: NetName=JTDI Pin=U4-50
+Removed Pin From Net: NetName=JTDO Pin=U4-55
+Removed Pin From Net: NetName=JNTRST Pin=U4-56
+Removed Pin From Net: NetName=PULS Pin=U5-5
+Removed Member From Class: ClassName=Drug Delivery CON_V112 Member=J1
+Removed Member From Class: ClassName=Drug Delivery CON_V112 Member=R6
+Removed Member From Class: ClassName=Drug Delivery CON_V112 Member=R7
+Removed Member From Class: ClassName=Drug Delivery CON_V112 Member=R8
+Change Component Footprint: Designator=P13 Old Footprint=VH3.96  4PIN New Footprint=VH3.96  2PIN
+Change Component Comment : Designator=P3 Old Comment=BRK New Comment=接电机制动器端口
+Change Component Comment : Designator=P13 Old Comment=POWER New Comment=电源端口
+Change Component Comment : Designator=P2 Old Comment=STO New Comment=安全功能端口
+Added Component: Designator=BUTTON1(BUTTON)
+Added Component: Designator=LED13(LED-0805)
+Added Component: Designator=P7(PIN4-1.27)
+Added Pin To Net: NetName=JNTRST Pin=BUTTON1-1
+Added Pin To Net: NetName=JNTRST Pin=BUTTON1-2
+Added Pin To Net: NetName=GND Pin=BUTTON1-3
+Added Pin To Net: NetName=GND Pin=BUTTON1-4
+Added Pin To Net: NetName=JTCK Pin=LED13-1
+Added Pin To Net: NetName=JTDI Pin=LED13-2
+Added Pin To Net: NetName=+3.3V Pin=P7-1
+Added Pin To Net: NetName=DC24V Pin=P7-2
+Added Pin To Net: NetName=DC24V0 Pin=P7-3
+Added Pin To Net: NetName=GND Pin=P7-4
+Added Pin To Net: NetName=+24V Pin=R79-1
+Added Pin To Net: NetName=JTDI Pin=U4-39
+Added Pin To Net: NetName=JNTRST Pin=U4-51
+Added Pin To Net: NetName=ALM Pin=U5-8
+Added Pin To Net: NetName=NetR28_1 Pin=U5-9
+Added Pin To Net: NetName=NetR70_1 Pin=U6-3
+Added Pin To Net: NetName=NetR67_1 Pin=U16-5
+Change Net Name : Old Net Name=DC24V0 New Net Name=TCK/SWCLK
+Change Net Name : Old Net Name=DC24V New Net Name=TMS/SWDIO
+Change Net Name : Old Net Name=JNTRST New Net Name=NetBUTTON1_1
+Change Net Name : Old Net Name=JTCK New Net Name=NetLED13_1
+Change Net Name : Old Net Name=JTDI New Net Name=NetLED13_2
+Change Net Name : Old Net Name=JTDO New Net Name=NetR61_2
+Change Net Name : Old Net Name=JTMS New Net Name=NetR64_2
+Change Net Name : Old Net Name=NetR61_1 New Net Name=NetR67_2
+Change Net Name : Old Net Name=NetR64_1 New Net Name=NetR70_2
+Change Net Name : Old Net Name=NetR67_1 New Net Name=NetR79_2
+Change Net Name : Old Net Name=NetR70_1 New Net Name=NetU5_4
+Change Class Name : Old Net Name=Drug Delivery CON_V112 New Net Name=Drug Delivery CON_V113
+Added Member To Class: ClassName=Drug Delivery CON_V113 Member=Component BUTTON1 SW4
+Added Member To Class: ClassName=Drug Delivery CON_V113 Member=Component LED13 LED
+Added Member To Class: ClassName=Drug Delivery CON_V113 Member=Component P7 Header 4
+Added Room: Name=Drug Delivery CON_V113
+Removed Pin From Net: NetName=24V0 Pin=LED5-2
+Added Pin To Net: NetName=OPPOSITESENSOR Pin=LED5-2
+Removed Pin From Net: NetName=24V0 Pin=LED6-2
+Added Pin To Net: NetName=GATESENSOR-OPEN Pin=LED6-2
+Removed Pin From Net: NetName=24V0 Pin=LED7-2
+Added Pin To Net: NetName=GATESENSOR-CLOSE Pin=LED7-2
+Removed Pin From Net: NetName=24V0 Pin=LED8-2
+Added Pin To Net: NetName=DOUSENSOR-OPEN Pin=LED8-2
+Removed Pin From Net: NetName=24V0 Pin=LED9-2
+Added Pin To Net: NetName=DOUSENSOR-CLOSE Pin=LED9-2
+Removed Pin From Net: NetName=GATESENSOR-OPEN Pin=R60-1
+Added Pin To Net: NetName=+24V Pin=R60-1
+Removed Pin From Net: NetName=GATESENSOR-CLOSE Pin=R63-1
+Added Pin To Net: NetName=+24V Pin=R63-1
+Removed Pin From Net: NetName=DOUSENSOR-OPEN Pin=R66-1
+Added Pin To Net: NetName=+24V Pin=R66-1
+Removed Pin From Net: NetName=DOUSENSOR-CLOSE Pin=R69-1
+Added Pin To Net: NetName=+24V Pin=R69-1
+Removed Pin From Net: NetName=OPPOSITESENSOR Pin=R78-2
+Added Pin To Net: NetName=+24V Pin=R78-2
+Removed Pin From Net: NetName=NetR28_1 Pin=U5-3
+Added Pin To Net: NetName=PULS Pin=U5-3
+Removed Pin From Net: NetName=FEEDBACK PLUS Pin=U5-10
+Added Pin To Net: NetName=EDM Pin=U5-10
+Removed Pin From Net: NetName=NetC20_1 Pin=U5-11
+Added Pin To Net: NetName=NetR29_1 Pin=U5-11
+Removed Pin From Net: NetName=EDM Pin=U5-12
+Added Pin To Net: NetName=FEEDBACK PLUS Pin=U5-12
+Removed Pin From Net: NetName=NetR29_1 Pin=U5-13
+Added Pin To Net: NetName=NetC20_1 Pin=U5-13
+Removed Pin From Net: NetName=NetR50_1 Pin=U14-1
+Added Pin To Net: NetName=NetR42_2 Pin=U14-1
+Removed Pin From Net: NetName=GATE-B Pin=U14-2
+Added Pin To Net: NetName=GATE-A Pin=U14-2
+Removed Pin From Net: NetName=NetR49_1 Pin=U14-3
+Added Pin To Net: NetName=NetR43_2 Pin=U14-3
+Removed Pin From Net: NetName=GATE-B Pin=U14-4
+Added Pin To Net: NetName=GATE-A Pin=U14-4
+Removed Pin From Net: NetName=NetR43_2 Pin=U14-5
+Added Pin To Net: NetName=NetR49_1 Pin=U14-5
+Removed Pin From Net: NetName=GATE-A Pin=U14-6
+Added Pin To Net: NetName=GATE-B Pin=U14-6
+Removed Pin From Net: NetName=NetR42_2 Pin=U14-7
+Added Pin To Net: NetName=NetR50_1 Pin=U14-7
+Removed Pin From Net: NetName=GATE-A Pin=U14-8
+Added Pin To Net: NetName=GATE-B Pin=U14-8
+Removed Pin From Net: NetName=NetQ5_1 Pin=U14-10
+Added Pin To Net: NetName=NetQ7_1 Pin=U14-10
+Removed Pin From Net: NetName=NetQ4_1 Pin=U14-12
+Added Pin To Net: NetName=NetQ6_1 Pin=U14-12
+Removed Pin From Net: NetName=NetQ6_1 Pin=U14-14
+Added Pin To Net: NetName=NetQ4_1 Pin=U14-14
+Removed Pin From Net: NetName=NetQ7_1 Pin=U14-16
+Added Pin To Net: NetName=NetQ5_1 Pin=U14-16
+Removed Pin From Net: NetName=NetR59_1 Pin=U15-1
+Added Pin To Net: NetName=NetR51_2 Pin=U15-1
+Removed Pin From Net: NetName=DOU-B Pin=U15-2
+Added Pin To Net: NetName=DOU-A Pin=U15-2
+Removed Pin From Net: NetName=NetR58_2 Pin=U15-3
+Added Pin To Net: NetName=NetR52_1 Pin=U15-3
+Removed Pin From Net: NetName=DOU-B Pin=U15-4
+Added Pin To Net: NetName=DOU-A Pin=U15-4
+Removed Pin From Net: NetName=NetR52_1 Pin=U15-5
+Added Pin To Net: NetName=NetR58_2 Pin=U15-5
+Removed Pin From Net: NetName=DOU-A Pin=U15-6
+Added Pin To Net: NetName=DOU-B Pin=U15-6
+Removed Pin From Net: NetName=NetR51_2 Pin=U15-7
+Added Pin To Net: NetName=NetR59_1 Pin=U15-7
+Removed Pin From Net: NetName=DOU-A Pin=U15-8
+Added Pin To Net: NetName=DOU-B Pin=U15-8
+Removed Pin From Net: NetName=NetQ9_1 Pin=U15-10
+Added Pin To Net: NetName=NetQ11_1 Pin=U15-10
+Removed Pin From Net: NetName=NetQ8_1 Pin=U15-12
+Added Pin To Net: NetName=NetQ10_1 Pin=U15-12
+Removed Pin From Net: NetName=NetQ10_1 Pin=U15-14
+Added Pin To Net: NetName=NetQ8_1 Pin=U15-14
+Removed Pin From Net: NetName=NetQ11_1 Pin=U15-16
+Added Pin To Net: NetName=NetQ9_1 Pin=U15-16
+Removed Pin From Net: NetName=24V0 Pin=U16-2
+Added Pin To Net: NetName=DOUSENSOR-OPEN Pin=U16-2
+Removed Pin From Net: NetName=24V0 Pin=U16-4
+Added Pin To Net: NetName=DOUSENSOR-CLOSE Pin=U16-4
+Removed Pin From Net: NetName=24V0 Pin=U16-6
+Added Pin To Net: NetName=OPPOSITESENSOR Pin=U16-6
+Removed Pin From Net: NetName=GS-CLOSE Pin=U17-13
+Added Pin To Net: NetName=GS-OPEN Pin=U17-13
+Removed Pin From Net: NetName=GS-OPEN Pin=U17-15
+Added Pin To Net: NetName=GS-CLOSE Pin=U17-15
+Removed Pin From Net: NetName=24V0 Pin=U17-2
+Added Pin To Net: NetName=GATESENSOR-CLOSE Pin=U17-2
+Removed Pin From Net: NetName=24V0 Pin=U17-4
+Added Pin To Net: NetName=GATESENSOR-OPEN Pin=U17-4

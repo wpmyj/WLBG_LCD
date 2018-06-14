@@ -1,0 +1,16 @@
+Removed Pin From Net: NetName=GATESENSOR-OPEN Pin=LED6-2
+Added Pin To Net: NetName=GATESENSOR-CLOSE Pin=LED6-2
+Removed Pin From Net: NetName=GATESENSOR-CLOSE Pin=LED7-2
+Added Pin To Net: NetName=GATESENSOR-OPEN Pin=LED7-2
+Removed Pin From Net: NetName=GS-OPEN Pin=R62-2
+Added Pin To Net: NetName=GS-CLOSE Pin=R62-2
+Removed Pin From Net: NetName=GS-CLOSE Pin=R65-2
+Added Pin To Net: NetName=GS-OPEN Pin=R65-2
+Removed Pin From Net: NetName=GATESENSOR-CLOSE Pin=U17-2
+Added Pin To Net: NetName=GATESENSOR-OPEN Pin=U17-2
+Removed Pin From Net: NetName=GATESENSOR-OPEN Pin=U17-4
+Added Pin To Net: NetName=GATESENSOR-CLOSE Pin=U17-4
+Removed Pin From Net: NetName=GS-OPEN Pin=U17-13
+Added Pin To Net: NetName=GS-CLOSE Pin=U17-13
+Removed Pin From Net: NetName=GS-CLOSE Pin=U17-15
+Added Pin To Net: NetName=GS-OPEN Pin=U17-15

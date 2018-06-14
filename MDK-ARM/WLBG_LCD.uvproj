@@ -351,7 +351,7 @@
               <MiscControls>--C99</MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\include;..\BSP\LCD;..\BSP\text;..\BSP\timer;..\STemWinLibrary522\Config;..\STemWinLibrary522\inc;..\STemWinLibrary522\Lib;..\STemWinLibrary522\OS</IncludePath>
+              <IncludePath>../Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\include;..\BSP\LCD;..\BSP\text;..\BSP\timer;..\STemWinLibrary522\Config;..\STemWinLibrary522\inc;..\STemWinLibrary522\Lib;..\STemWinLibrary522\OS;..\BSP\usrat</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>

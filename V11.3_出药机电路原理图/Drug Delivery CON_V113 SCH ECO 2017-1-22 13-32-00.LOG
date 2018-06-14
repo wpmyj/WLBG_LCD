@@ -1,0 +1,20 @@
+Change Component Designator: Old Designator=BUTTON? New Designator=BUTTON1
+Change Component Designator: Old Designator=LED? New Designator=LED13
+Change Component Designator: Old Designator=P? New Designator=P7
+Change Component Designator: Old Designator=R? New Designator=R4
+Change Component Designator: Old Designator=R? New Designator=R5
+Change Component Part ID : Designator=U5 Old Part ID =2 New Part ID =4
+Change Component Part ID : Designator=U5 Old Part ID =3 New Part ID =2
+Change Component Part ID : Designator=U5 Old Part ID =4 New Part ID =3
+Change Component Part ID : Designator=U5 Old Part ID =5 New Part ID =6
+Change Component Part ID : Designator=U5 Old Part ID =6 New Part ID =5
+Change Component Part ID : Designator=U14 Old Part ID =1 New Part ID =4
+Change Component Part ID : Designator=U14 Old Part ID =2 New Part ID =3
+Change Component Part ID : Designator=U14 Old Part ID =3 New Part ID =2
+Change Component Part ID : Designator=U14 Old Part ID =4 New Part ID =1
+Change Component Part ID : Designator=U15 Old Part ID =1 New Part ID =4
+Change Component Part ID : Designator=U15 Old Part ID =2 New Part ID =3
+Change Component Part ID : Designator=U15 Old Part ID =3 New Part ID =2
+Change Component Part ID : Designator=U15 Old Part ID =4 New Part ID =1
+Change Component Part ID : Designator=U17 Old Part ID =1 New Part ID =2
+Change Component Part ID : Designator=U17 Old Part ID =2 New Part ID =1
