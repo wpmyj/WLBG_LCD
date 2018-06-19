@@ -1,5 +1,0 @@
-Change Component Comment : Designator=P6 Old Comment=接安全继电器 New Comment=PIN2_3.96
-Added Pin To Net: NetName=SF1+ Pin=P2-3
-Added Pin To Net: NetName=SF1+ Pin=P6-2
-Removed Pin From Net: NetName=SF1+ Pin=P6-1
-Added Pin To Net: NetName=+24V Pin=P6-1

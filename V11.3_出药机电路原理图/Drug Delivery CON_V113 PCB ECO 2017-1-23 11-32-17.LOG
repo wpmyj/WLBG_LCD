@@ -1,5 +1,0 @@
-Added Component: Designator=PT5(PLUG)
-Added Pin To Net: NetName=NetPT5_1 Pin=PT5-1
-Added Pin To Net: NetName=NetPT5_1 Pin=U3-4
-Added Net: Name=NetPT5_1
-Added Member To Class: ClassName=Drug Delivery CON_V113 Member=Component PT5 RST

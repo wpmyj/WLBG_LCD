@@ -1,5 +1,0 @@
-Change Component Footprint: Designator=P1 Old Footprint=VH3.96 14PIN New Footprint=VH3.96 16PIN
-Added Pin To Net: NetName=+24V Pin=P2-5
-Added Pin To Net: NetName=EDM- Pin=P2-6
-Added Pin To Net: NetName=DC24V Pin=P13-3
-Added Pin To Net: NetName=DC24V0 Pin=P13-4
