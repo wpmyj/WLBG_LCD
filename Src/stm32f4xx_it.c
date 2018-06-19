@@ -40,6 +40,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f4xx_it.h"
+#include"HeadType.h"
 
 /** @addtogroup STM32F4xx_HAL_Examples
   * @{
@@ -157,8 +158,30 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   HAL_IncTick();
+	HAL_SYSTICK_IRQHandler();
 }
-
+void TIM2_IRQHandler(void)
+{
+	HAL_TIM_IRQHandler(&htim2);
+}
+void TIM3_IRQHandler(void)
+{
+	HAL_TIM_IRQHandler(&htim3);
+}
+void TIM4_IRQHandler(void)
+{
+	HAL_TIM_IRQHandler(&htim4);
+}
+void USART1_IRQHandler(void)
+{
+	UART_HandleTypeDef *huart =&huart1;
+	
+	if(huart->RxState == HAL_UART_STATE_BUSY_RX)
+	{
+		USART1_Do_Rx((uint8_t)(huart->Instance->DR & (uint8_t)0x00FF));
+	}
+  HAL_UART_IRQHandler(&huart1);
+}
 /******************************************************************************/
 /*                 STM32F4xx Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */

@@ -1,5 +1,5 @@
 #include"HeadType.h"
-#include "stm32f1xx_hal.h"
+#include "stm32f4xx_hal.h"
 
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;

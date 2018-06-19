@@ -1,18 +1,18 @@
 #ifndef __TEXT_H__
 #define __TEXT_H__	 
-#include "stm32f1xx_hal.h"
+#include "stm32f4xx_hal.h"
 #include"HeadType.h"
 
-#define ROM_IN_Clr() HAL_GPIO_WritePin(GPIOC,GPIO_PIN_2,GPIO_PIN_RESET)
-#define ROM_IN_Set() HAL_GPIO_WritePin(GPIOC,GPIO_PIN_2,GPIO_PIN_SET)
+#define ROM_IN_Clr() HAL_GPIO_WritePin(GPIOA,GPIO_PIN_7,GPIO_PIN_RESET)
+#define ROM_IN_Set() HAL_GPIO_WritePin(GPIOA,GPIO_PIN_7,GPIO_PIN_SET)
 
-#define ROM_SCK_Clr() HAL_GPIO_WritePin(GPIOC,GPIO_PIN_3,GPIO_PIN_RESET)
-#define ROM_SCK_Set() HAL_GPIO_WritePin(GPIOC,GPIO_PIN_3,GPIO_PIN_SET)
+#define ROM_SCK_Clr() HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,GPIO_PIN_RESET)
+#define ROM_SCK_Set() HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,GPIO_PIN_SET)
 
-#define ROM_CS_Clr() HAL_GPIO_WritePin(GPIOA,GPIO_PIN_1,GPIO_PIN_RESET)
-#define ROM_CS_Set() HAL_GPIO_WritePin(GPIOA,GPIO_PIN_1,GPIO_PIN_SET)
+#define ROM_CS_Clr() HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,GPIO_PIN_RESET)
+#define ROM_CS_Set() HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,GPIO_PIN_SET)
 
-#define READ_ROM_OUT()  HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_0) 
+#define READ_ROM_OUT()  HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_6) 
  		
 
 void ROM_GT30L_Init(void);

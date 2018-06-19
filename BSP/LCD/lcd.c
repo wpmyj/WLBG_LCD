@@ -1,8 +1,7 @@
 #include "lcd.h"
 #include "stdlib.h"
 #include "font.h" 
-#include "stm32f1xx_hal.h"
-
+#include "stm32f4xx_hal.h"
 //LCD的画笔颜色和背景色	   
 u16 POINT_COLOR=WHITE;	//画笔颜色
 u16 BACK_COLOR=BLACK;  //背景色 
@@ -27,31 +26,32 @@ void ParallelPortInit(){
 	GPIO_InitTypeDef GPIO_InitStruct;
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6 
-                          |GPIO_PIN_7, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_7 
+                          |GPIO_PIN_13, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13 
-                          |GPIO_PIN_14|GPIO_PIN_15|GPIO_PIN_7|GPIO_PIN_8 
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3 
+                          |GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7 
                           |GPIO_PIN_9, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : PA1 PA4 PA5 PA6 
                            PA7 */
-  GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6 |GPIO_PIN_7;
+  GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_7 |GPIO_PIN_13;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PB10 PB11 PB12 PB13 
                            PB14 PB15 PB7 PB8 
                            PB9 */
-  GPIO_InitStruct.Pin = GPIO_PIN_7|GPIO_PIN_8 |GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13 |GPIO_PIN_14|GPIO_PIN_15;
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1 |GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6 |GPIO_PIN_7|GPIO_PIN_9;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);	
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);	
 }
 
 
@@ -60,7 +60,7 @@ void WriteComm(unsigned int Comm)
 	NCS_L;
 	NRD_H;
 	NRS_L;	
-	GPIOB -> BSRR = (Comm << 8) | ( (~Comm & 0xff) << 24);	
+	GPIOC -> BSRR = (Comm << 0) | ( (~Comm & 0xff) << 16);	
 	NWR_L;  
 	NWR_H; 
 
@@ -73,7 +73,7 @@ void WriteData(unsigned int Data)
 	NRD_H;
 	NRS_H;	 
 	
-	GPIOB -> BSRR = (Data << 8) | ( (~Data & 0xff) << 24); 
+	GPIOC -> BSRR = (Data << 0) | ( (~Data & 0xff) << 16); 
 	NWR_L;  
 	NWR_H; 
 
@@ -101,26 +101,26 @@ u16 LCD_RD_DATA(void)
 	 GPIO_InitTypeDef GPIO_InitStruct;
 	vu16 ram;			//防止被优化
 //	u8 rdata1,rdata2;
-  GPIO_InitStruct.Pin = GPIO_PIN_8 |GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13 |GPIO_PIN_14|GPIO_PIN_15;
+  GPIO_InitStruct.Pin = GPIO_PIN_0 |GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5 |GPIO_PIN_6|GPIO_PIN_7;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 	
 	NCS_L;
 	NWR_H;
 	NRS_H;
   
   NRD_L;	
-	ram = (GPIOB->IDR & 0xFF00)>>8;
+	ram = (GPIOC->IDR & 0x00FF)>>0;
 	NRD_H;
 
 	NCS_H;
 	
-  GPIO_InitStruct.Pin = GPIO_PIN_7|GPIO_PIN_8 |GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13 |GPIO_PIN_14|GPIO_PIN_15;
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1 |GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6 |GPIO_PIN_7|GPIO_PIN_9;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);	
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);	
 	return ram;	 
 }					   
 //写寄存器
@@ -159,11 +159,11 @@ void LCD_WriteRAM(u16 RGB_Code)
 	NRD_H;
 	NRS_H;
 	wdata=RGB_Code>>8; 
-	GPIOB -> BSRR = (wdata << 8) | ( (~wdata & 0xff) << 24);	
+	GPIOC -> BSRR = (wdata << 0) | ( (~wdata & 0xff) << 16);	
 	NWR_L;  
 	NWR_H; 
 	wdata=RGB_Code;		
-	GPIOB -> BSRR = (wdata << 8) | ( (~wdata & 0xff) << 24);	
+	GPIOC -> BSRR = (wdata << 0) | ( (~wdata & 0xff) << 16);	
 	NWR_L;  
 	NWR_H; 
 
@@ -641,7 +641,8 @@ void LCD_Init(void)
 	delay_ms(800);
 	RST_H;
 	delay_ms(800); 					// delay 50 ms 
-  lcddev.id=LCD_ReadReg(0x0000);	//读ID（9320/9325/9328/4531/4535等IC）  
+  lcddev.id=LCD_ReadReg(0x0000);	//读ID（9320/9325/9328/4531/4535等IC）
+  lcddev.id= 0xFFFF;
   	if(lcddev.id<0XFF||lcddev.id==0XFFFF||lcddev.id==0X9300)//读到ID不正确,新增lcddev.id==0X9300判断，因为9341在未被复位的情况下会被读成9300
 	{	
  		//尝试9341 ID的读取		
@@ -651,7 +652,7 @@ void LCD_Init(void)
   		lcddev.id=LCD_RD_DATA();   	//读取93								   
  		lcddev.id<<=8;
 		lcddev.id|=LCD_RD_DATA();  	//读取41 	 
-//		lcddev.id=0X9341;		
+		lcddev.id=0X9341;		
  		if(lcddev.id!=0X9341)		//非9341,尝试是不是6804
 		{	
  			LCD_WR_REG(0XBF);				   

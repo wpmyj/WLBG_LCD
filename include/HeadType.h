@@ -1,7 +1,7 @@
 #ifndef __HEADTYPE_H_
 #define __HEADTYPE_H_
 
-#include "stm32f1xx_hal.h"
+#include "stm32f4xx_hal.h"
 #include <stdio.h>
 #include <string.h>	
 #include "usart.h"
