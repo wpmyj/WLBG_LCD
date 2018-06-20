@@ -268,6 +268,7 @@ extern unsigned char send_cark_flag;
 
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
+extern TIM_OC_InitTypeDef htim3_CH4;	
 extern TIM_HandleTypeDef htim4;
 extern UART_HandleTypeDef huart1;
 /*************extern variable end*******************/
@@ -287,6 +288,8 @@ void dispose_menu(void);
 void TIM2_Config(void );
 void TIM3_Config(void );
 void TIM4_Config(void );
+void TIM3_PWM_Init(u16 arr,u16 psc);
+void TIM_SetTIM3Compare1(u32 compare);
 /*************function end*******************/
 #endif
 

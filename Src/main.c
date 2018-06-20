@@ -49,17 +49,10 @@ CRC_HandleTypeDef hcrc;
 void Stm32_Clock_Init(u32 plln,u32 pllm,u32 pllp,u32 pllq);
 static void MX_GPIO_Init(void);
 void MX_CRC_Init(void);
-/* USER CODE BEGIN PFP */
-/* Private function prototypes -----------------------------------------------*/
-
-/* USER CODE END PFP */
-
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
 void GUIDEMO_Main(void);
 int main(void)
 {
+	static u16 pwm_duty = 10;
   HAL_Init();
   Stm32_Clock_Init(336,8,2,7);
 	MX_CRC_Init();
@@ -68,8 +61,9 @@ int main(void)
 //	GUI_Init();
 	MX_GPIO_Init();
 	TIM2_Config();
-	TIM3_Config();
-//	USART1_Config();
+//	TIM3_Config();
+	TIM3_PWM_Init(2000,84-1);    	//84M/84=1M的计数频率，自动重装载为500，那么PWM频率为1M/500=2kHZ
+	USART1_Config();
 	delay_ms(200);
 //	GUI_DispStringAt("MINI_STM32 STemWin test!",10,30);
 //	GUI_DispStringAt("MINI_STM32 STemWin test!",20,46);
@@ -85,7 +79,6 @@ int main(void)
 		Show_Str(10 + 12*6,130,8*6,"World",BACK_COLOR,POINT_COLOR,16,0);
 		Show_Str(32,162,64*4,"东ABC2区",BACK_COLOR,POINT_COLOR,64,0);
 		delay_ms(1000);
-		delay_ms(1000);
 		LCD_Clear(BLACK);
 		POINT_COLOR = WHITE;
 		Show_Str(40,0,80*4,"东12区",BACK_COLOR,POINT_COLOR,80,0);
@@ -93,10 +86,8 @@ int main(void)
 		POINT_COLOR = RED;
 		Show_Str(0,160,80*4,"(2096)袋",BACK_COLOR,POINT_COLOR,80,0);
 		delay_ms(1000);
-
-  }
   /* USER CODE END 3 */
-
+	}
 }
 
 /** System Clock Configuration
@@ -234,6 +225,8 @@ void HAL_CRC_MspDeInit(CRC_HandleTypeDef* hcrc)
     __HAL_RCC_CRC_CLK_DISABLE();
   }
 } 
+
+
 /******************* (C) COPYRIGHT 2015-2020 ????????? *****END OF FILE****/
 
 /**
