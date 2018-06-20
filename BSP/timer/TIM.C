@@ -23,7 +23,7 @@ void TIM2_Config(void )
   TIM_MasterConfigTypeDef sMasterConfig;
   
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 72-1;
+  htim2.Init.Prescaler = 42-1;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim2.Init.Period = 5000;
   htim2.Init.ClockDivision=TIM_CLOCKDIVISION_DIV1;
@@ -51,7 +51,7 @@ void TIM3_Config(void)
   TIM_MasterConfigTypeDef sMasterConfig;
   
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 72-1;
+  htim3.Init.Prescaler = 42-1;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim3.Init.Period = 5000;
   htim3.Init.ClockDivision=TIM_CLOCKDIVISION_DIV1;
@@ -127,7 +127,7 @@ void TIM4_Config(void)
   TIM_MasterConfigTypeDef sMasterConfig;
   
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 72-1;
+  htim4.Init.Prescaler = 42-1;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 5000;
   htim4.Init.ClockDivision=TIM_CLOCKDIVISION_DIV1;
@@ -191,7 +191,7 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	if(htim->Instance==TIM2){
-
+		Led_Flash();
   }else if(htim->Instance==TIM3){
 
   }else  if(htim->Instance==TIM4){

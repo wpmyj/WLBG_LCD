@@ -14,24 +14,29 @@ u8 Rled_Light_Static;
 //=============================================================================
 void LED_GPIO_Config(void)
 {	
-	//定义一个GPIO_InitTypeDef 类型的结构体，名字叫GPIO_InitStructure 
-	GPIO_InitTypeDef  GPIO_InitStructure;
-	//使能GPIOC的外设时钟
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);
+  GPIO_InitTypeDef GPIO_InitStruct;
 
-	//选择要用的GPIO引脚		
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1|GPIO_Pin_0;
-	///设置引脚模式为推免输出模式			 
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 
-	//设置引脚速度为50MHZ
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
-	//调用库函数，初始化GPIO
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOE_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  /*Configure GPIO pins : PC2 PC3 */
+  GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_3;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
+	GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+	
  	GLED_OFF;
 	RLED_OFF;
 	Gled_Num = 1;
 	Rled_Num = 0;
+	RGB_GLED_OFF;
+	RGB_RLED_OFF;
+	RGB_BLED_OFF;
 }
 
 //=============================================================================
