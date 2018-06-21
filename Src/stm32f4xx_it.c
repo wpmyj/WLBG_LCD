@@ -41,6 +41,7 @@
 #include "main.h"
 #include "stm32f4xx_it.h"
 #include"HeadType.h"
+#include "GUI.h"
 
 /** @addtogroup STM32F4xx_HAL_Examples
   * @{
@@ -155,10 +156,12 @@ void PendSV_Handler(void)
   * @param  None
   * @retval None
   */
+extern volatile GUI_TIMER_TIME OS_TimeMS;
 void SysTick_Handler(void)
 {
   HAL_IncTick();
 	HAL_SYSTICK_IRQHandler();
+	OS_TimeMS++;
 }
 void TIM2_IRQHandler(void)
 {

@@ -59,7 +59,35 @@ Purpose     : Several GUIDEMO routines
 
 
 #include "GUIDEMO.h"
+#include "MainTask.h"
 
+void MainTask_test(void);
+/* 私有类型定义 --------------------------------------------------------------*/
+/* 私有宏定义 ----------------------------------------------------------------*/
+#define Method3  
+
+#define XBF_KAITI24_ADDR       0     //字库存放在SPI_FLash地址
+uint8_t tempbuf[256]={0};            /* 从SD卡读取数据的缓冲 */
+#define XBF_KAITI24_SIZE    (1600)   // kaiti24.xbf字库文件存占用扇区数(每个扇区为4096个字节)
+
+/* 扩展变量 ------------------------------------------------------------------*/
+extern GUI_CONST_STORAGE GUI_FONT GUI_FontSong16;
+
+/* 私有函数原形 --------------------------------------------------------------*/
+/* 函数体 --------------------------------------------------------------------*/
+/**
+  * 函数功能: 对话框信息
+  * 输入参数: 无
+  * 返 回 值: 无
+  * 说    明: 无
+  */
+static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
+    { WINDOW_CreateIndirect,    "YSF1",            GUI_ID_TEXT1,     0, 0,  320,240,0,0},
+    { TEXT_CreateIndirect,      "硬石电子",        GUI_ID_TEXT2,     0, 20, 320, 240, 0, 0x0, 0},
+    { TEXT_CreateIndirect,      "硬石电子",        GUI_ID_TEXT3,     0, 50, 320, 240, 0, 0x0, 0},
+    { TEXT_CreateIndirect,      "硬石电子",        GUI_ID_TEXT4,     0, 100, 320, 240, 0, 0x0, 0},
+    { TEXT_CreateIndirect,      "硬石电子",        GUI_ID_TEXT5,     0, 120, 320, 240, 0, 0x0, 0},
+};
 
 /*********************************************************************
 *
@@ -428,19 +456,19 @@ static void _Main(void) {
   //
   // Run the demos
   //
-  for (_iDemo = 0; _GUIDemoConfig.apFunc[_iDemo]; _iDemo++) {
-    _ClearHalt();
-    GUIDEMO_UpdateControlText();
-    (*_GUIDemoConfig.apFunc[_iDemo])();
-    _iDemoMinor = 0;
-    _Pressed    = 0;
-  }
-  _iDemo = 0;
+//   for (_iDemo = 0; _GUIDemoConfig.apFunc[_iDemo]; _iDemo++) {
+//     _ClearHalt();
+//     GUIDEMO_UpdateControlText();
+//     (*_GUIDemoConfig.apFunc[_iDemo])();
+//     _iDemoMinor = 0;
+//     _Pressed    = 0;
+//   }
+//   _iDemo = 0;
   //
   // Cleanup
   //
-  WM_DeleteWindow(_hDialogControl);
-  WM_DeleteWindow(_hDialogInfo);
+//   WM_DeleteWindow(_hDialogControl);
+//   WM_DeleteWindow(_hDialogInfo);
   #if (GUI_SUPPORT_CURSOR | GUI_SUPPORT_TOUCH)
     GUI_CURSOR_Hide();
   #endif
@@ -743,56 +771,208 @@ void GUIDEMO_Wait(int TimeWait) {
 *       GUIDEMO_Main
 */
 void GUIDEMO_Main(void) {
-//  FRAMEWIN_SKINFLEX_PROPS Framewin_Props;
-//#if GUIDEMO_USE_AUTO_BK
-//  int                     NumFreeBytes;
-//  int                     BitsPerPixel;
-//#endif
+ FRAMEWIN_SKINFLEX_PROPS Framewin_Props;
+#if GUIDEMO_USE_AUTO_BK
+ int                     NumFreeBytes;
+ int                     BitsPerPixel;
+#endif
 
-//  GUI_MEMDEV_SetAnimationCallback(_cbEffect, (void *)&_Pressed);
-//  WM_SetCallback(WM_HBKWIN, _cbBk);
-//  BUTTON_SetReactOnLevel();
-//  FRAMEWIN_GetSkinFlexProps(&Framewin_Props, FRAMEWIN_SKINFLEX_PI_ACTIVE);
-//  Framewin_Props.Radius = 0;
-//  FRAMEWIN_SetSkinFlexProps(&Framewin_Props, FRAMEWIN_SKINFLEX_PI_ACTIVE);
-//  FRAMEWIN_GetSkinFlexProps(&Framewin_Props, FRAMEWIN_SKINFLEX_PI_INACTIVE);
-//  Framewin_Props.Radius = 0;
-//  FRAMEWIN_SetSkinFlexProps(&Framewin_Props, FRAMEWIN_SKINFLEX_PI_INACTIVE);
-//  FRAMEWIN_SetDefaultSkin  (_FRAMEWIN_DrawSkinFlex);
-//  PROGBAR_SetDefaultSkin   (PROGBAR_SKIN_FLEX);
-//  BUTTON_SetDefaultSkin    (BUTTON_SKIN_FLEX);
-//  SCROLLBAR_SetDefaultSkin (SCROLLBAR_SKIN_FLEX);
-//  SLIDER_SetDefaultSkin    (SLIDER_SKIN_FLEX);
-//  HEADER_SetDefaultSkin    (HEADER_SKIN_FLEX);
-//  GUI_SetTextMode          (GUI_TM_TRANS);
+ GUI_MEMDEV_SetAnimationCallback(_cbEffect, (void *)&_Pressed);
+ WM_SetCallback(WM_HBKWIN, _cbBk);
+ BUTTON_SetReactOnLevel();
+ FRAMEWIN_GetSkinFlexProps(&Framewin_Props, FRAMEWIN_SKINFLEX_PI_ACTIVE);
+ Framewin_Props.Radius = 0;
+ FRAMEWIN_SetSkinFlexProps(&Framewin_Props, FRAMEWIN_SKINFLEX_PI_ACTIVE);
+ FRAMEWIN_GetSkinFlexProps(&Framewin_Props, FRAMEWIN_SKINFLEX_PI_INACTIVE);
+ Framewin_Props.Radius = 0;
+ FRAMEWIN_SetSkinFlexProps(&Framewin_Props, FRAMEWIN_SKINFLEX_PI_INACTIVE);
+ FRAMEWIN_SetDefaultSkin  (_FRAMEWIN_DrawSkinFlex);
+ PROGBAR_SetDefaultSkin   (PROGBAR_SKIN_FLEX);
+ BUTTON_SetDefaultSkin    (BUTTON_SKIN_FLEX);
+ SCROLLBAR_SetDefaultSkin (SCROLLBAR_SKIN_FLEX);
+ SLIDER_SetDefaultSkin    (SLIDER_SKIN_FLEX);
+ HEADER_SetDefaultSkin    (HEADER_SKIN_FLEX);
+ GUI_SetTextMode          (GUI_TM_TRANS);
 //  GUIDEMO_Config(&_GUIDemoConfig);
-//  #if GUIDEMO_USE_VNC
-//    if (GUIDEMO_GetConfFlag(GUIDEMO_CF_USE_VNC)) {
-//      _GUIDemoConfig.pGUI_VNC_X_StartServer(0, 0);
-//    }
-//  #endif
-//  #if GUIDEMO_USE_AUTO_BK
-//    //
-//    // Determine if HW has enough memory to draw the gradient circle as background
-//    //
-//    BitsPerPixel = LCD_GetBitsPerPixel();
-//    if ((BitsPerPixel >= 16) && GUIDEMO_GetConfFlag(GUIDEMO_CF_USE_AUTO_BK)) {
-//      NumFreeBytes = GUI_ALLOC_GetNumFreeBytes();
-//      if (NumFreeBytes > NUMBYTES_NEEDED) {
-//        _pfDrawBk = _DrawBkCircle;
-//      } else {
-//        _pfDrawBk = _DrawBk;
-//      }
-//    } else
-//  #endif
-//    {
-//      _pfDrawBk = _DrawBkSimple;
-//    }
-//  GUIDEMO_SetDrawLogo(1);
+ #if GUIDEMO_USE_VNC
+   if (GUIDEMO_GetConfFlag(GUIDEMO_CF_USE_VNC)) {
+     _GUIDemoConfig.pGUI_VNC_X_StartServer(0, 0);
+   }
+ #endif
+ #if GUIDEMO_USE_AUTO_BK
+   //
+   // Determine if HW has enough memory to draw the gradient circle as background
+   //
+   BitsPerPixel = LCD_GetBitsPerPixel();
+   if ((BitsPerPixel >= 16) && GUIDEMO_GetConfFlag(GUIDEMO_CF_USE_AUTO_BK)) {
+     NumFreeBytes = GUI_ALLOC_GetNumFreeBytes();
+     if (NumFreeBytes > NUMBYTES_NEEDED) {
+       _pfDrawBk = _DrawBkCircle;
+     } else {
+       _pfDrawBk = _DrawBk;
+     }
+   } else
+ #endif
+   {
+     _pfDrawBk = _DrawBkSimple;
+   }
+ GUIDEMO_SetDrawLogo(1);
   while (1) {
     _Main();
   }
 }
 
+
+
+/**
+  * 函数功能: 重绘
+  * 输入参数: 无
+  * 返 回 值: 无
+  * 说    明: 无
+  */
+void PaintDialog(WM_MESSAGE * pMsg)
+{
+//    WM_HWIN hWin = pMsg->hWin;
+}
+
+/**
+  * 函数功能: 对话框初始化
+  * 输入参数: 无
+  * 返 回 值: 无
+  * 说    明: 无
+  */
+void InitDialog(WM_MESSAGE * pMsg)
+{
+  WM_HWIN hWin = pMsg->hWin;
+
+	TEXT_SetTextColor(WM_GetDialogItem(hWin,GUI_ID_TEXT0), GUI_BLUE);
+  TEXT_SetFont(WM_GetDialogItem(hWin,GUI_ID_TEXT0),&GUI_FontHZ12);
+	TEXT_SetTextColor(WM_GetDialogItem(hWin,GUI_ID_TEXT1), GUI_MAGENTA);
+	TEXT_SetFont(WM_GetDialogItem(hWin,GUI_ID_TEXT1),&GUI_FontHZ16);
+	TEXT_SetTextColor(WM_GetDialogItem(hWin,GUI_ID_TEXT2), GUI_RED);
+	TEXT_SetFont(WM_GetDialogItem(hWin,GUI_ID_TEXT2),&GUI_FontHZ24);
+	TEXT_SetTextColor(WM_GetDialogItem(hWin,GUI_ID_TEXT3), GUI_GREEN);
+	TEXT_SetFont(WM_GetDialogItem(hWin,GUI_ID_TEXT3),&GUI_FontHZ32);
+}
+
+/**
+  * 函数功能: 对话框回调函数
+  * 输入参数: 无
+  * 返 回 值: 无
+  * 说    明: 无
+  */
+static void _cbCallback(WM_MESSAGE * pMsg) 
+{
+    int NCode, Id;
+    WM_HWIN hWin = pMsg->hWin;
+    switch (pMsg->MsgId) 
+    {
+        case WM_PAINT:
+            PaintDialog(pMsg);
+            break;
+		
+        case WM_INIT_DIALOG:
+            InitDialog(pMsg);
+            break;
+		
+        case WM_KEY:
+            switch (((WM_KEY_INFO*)(pMsg->Data.p))->Key) 
+            {
+                case GUI_KEY_ESCAPE:
+                    GUI_EndDialog(hWin, 1);
+                    break;
+                case GUI_KEY_ENTER:
+                    GUI_EndDialog(hWin, 0);
+                    break;
+            }
+            break;
+			
+        case WM_NOTIFY_PARENT:
+            Id = WM_GetId(pMsg->hWinSrc); 
+            NCode = pMsg->Data.v;        
+            switch (Id) 
+            {
+                case GUI_ID_OK:
+                    if(NCode==WM_NOTIFICATION_RELEASED)
+                        GUI_EndDialog(hWin, 0);
+                    break;
+					
+                case GUI_ID_CANCEL:
+                    if(NCode==WM_NOTIFICATION_RELEASED)
+                        GUI_EndDialog(hWin, 0);
+                    break;
+            }
+            break;
+			
+        default:
+            WM_DefaultProc(pMsg);
+    }
+}
+
+/**
+  * 函数功能: 往SPIFlash写入字库文件
+  * 输入参数: 无
+  * 返 回 值: 无
+  * 说    明: 无
+  */
+// void LoadFontLib(void)
+// {
+//   uint32_t j;
+//   uint32_t write_addr=0;
+
+//  /* 开背光 */
+//   LCD_BK_ON();	
+// 	/* 清屏 */
+// 	GUI_SetBkColor(GUI_BLUE);
+// 	GUI_Clear();
+
+// /* 第2步：打开文件 ***************************************************************/
+// 	f_res = f_open(&file, "0:GBK.bin", FA_OPEN_EXISTING | FA_READ );
+// 	if (f_res !=  FR_OK)
+// 	{
+// 		printf("font.bin文件打开失败");
+// 	}
+//   write_addr=XBF_KAITI24_ADDR;
+//   for(j=0;j<XBF_KAITI24_SIZE;j++)//擦除扇区
+//   {
+//     SPI_FLASH_SectorErase(write_addr+j*4096);
+//   }
+//   
+// /* 第3步：复制SD卡中字库文件font.bin到SPI FLASH **********************************/
+//   write_addr=XBF_KAITI24_ADDR;
+//   while(f_res == FR_OK) 
+//   {
+//    /* 读取一个扇区的数据到tempbuf */
+//     f_res = f_read(&file, tempbuf, sizeof(tempbuf), &fnum);
+//     if(f_res!=FR_OK)break;			 //执行错误  
+//     /* 写数据到SPI FLASH */
+//     SPI_FLASH_BufferWrite(tempbuf, write_addr, 256);
+//     write_addr+=256;	
+//     j++;
+//     if(fnum !=256)break;    
+//   }
+//     f_close(&file);
+//       
+// 	/* 等待1秒后开始进去emWin主界面 */
+// 	GUI_Delay(1000);
+// }
+
+/**
+  * 函数功能: GUI功能函数
+  * 输入参数: 无
+  * 返 回 值: 无
+  * 说    明: 无
+  */
+void MainTask_test(void) 
+{	
+ 
+  /* 创建对话框 */
+  GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), &_cbCallback, 0, 0, 0);
+  while(1)
+	{	
+		GUI_Delay(10);	
+	}
+  
+}
 /*************************** End of file ****************************/
 

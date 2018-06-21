@@ -205,7 +205,7 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
   #define GUIDEMO_USE_VNC         (0)
 #endif
 #ifndef   GUIDEMO_USE_AUTO_BK
-  #define GUIDEMO_USE_AUTO_BK     (0)
+  #define GUIDEMO_USE_AUTO_BK     (1)
 #endif
 
 #define GUIDEMO_CF_SHOW_SPRITES (GUIDEMO_SHOW_SPRITES <<  0)
