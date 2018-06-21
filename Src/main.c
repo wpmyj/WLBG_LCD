@@ -56,37 +56,36 @@ int main(void)
   Stm32_Clock_Init(336,8,2,7);
 	MX_CRC_Init();
 	ROM_GT30L_Init();
-	LCD_Init();
+//	LCD_Init();
 	LED_GPIO_Config();
-//	GUI_Init();
+	GUI_Init();
 	MX_GPIO_Init();
 	TIM2_Config();
 //	TIM3_Config();
 	TIM3_PWM_Init(2000,42-1);    	//42M/42=1M的计数频率，自动重装载为500，那么PWM频率为1M/500=2kHZ
 	USART1_Config();
 	delay_ms(200);
-//	GUI_DispStringAt("MINI_STM32 STemWin test!",10,30);
-//	GUI_DispStringAt("MINI_STM32 STemWin test!",20,46);
-//	GUIDEMO_Main();
+	GUI_DispStringAt("MINI_STM32 STemWin test!",10,30);
+	GUI_DispStringAt("MINI_STM32 STemWin test!",20,46);
+	GUIDEMO_Main();
   while (1)
   {
-		LCD_Clear(BLACK);
-	  Show_Str(20,20,16*2,"你好",BACK_COLOR,POINT_COLOR,16,0);
-//		Show_Str(50,20,24*6,"我们是好孩子",BACK_COLOR,POINT_COLOR,24,0);
-		Show_Str(40,50,6*32,"我们是好孩子",BACK_COLOR,POINT_COLOR,32,0);
-		Show_Str(100,100,16*6,"Hello",BACK_COLOR,POINT_COLOR,32,0);
-		Show_Str(10,130,12*6,"World",BACK_COLOR,POINT_COLOR,24,0);
-		Show_Str(10 + 12*6,130,8*6,"World",BACK_COLOR,POINT_COLOR,16,0);
-		Show_Str(32,162,64*4,"东ABC2区",BACK_COLOR,POINT_COLOR,64,0);
-		delay_ms(1000);
-		LCD_Clear(BLACK);
-		POINT_COLOR = WHITE;
-		Show_Str(40,0,80*4,"东12区",BACK_COLOR,POINT_COLOR,80,0);
-		Show_Str(80,80,80*4," 住院 ",BACK_COLOR,POINT_COLOR,80,0);
-		POINT_COLOR = RED;
-		Show_Str(0,160,80*4,"(2096)袋",BACK_COLOR,POINT_COLOR,80,0);
-		delay_ms(1000);
-  /* USER CODE END 3 */
+//		LCD_Clear(BLACK);
+//	  Show_Str(20,20,16*2,"你好",BACK_COLOR,POINT_COLOR,16,0);
+////		Show_Str(50,20,24*6,"我们是好孩子",BACK_COLOR,POINT_COLOR,24,0);
+//		Show_Str(40,50,6*32,"我们是好孩子",BACK_COLOR,POINT_COLOR,32,0);
+//		Show_Str(100,100,16*6,"Hello",BACK_COLOR,POINT_COLOR,32,0);
+//		Show_Str(10,130,12*6,"World",BACK_COLOR,POINT_COLOR,24,0);
+//		Show_Str(10 + 12*6,130,8*6,"World",BACK_COLOR,POINT_COLOR,16,0);
+//		Show_Str(32,162,64*4,"东ABC2区",BACK_COLOR,POINT_COLOR,64,0);
+//		delay_ms(1000);
+//		LCD_Clear(BLACK);
+//		POINT_COLOR = WHITE;
+//		Show_Str(40,0,80*4,"东12区",BACK_COLOR,POINT_COLOR,80,0);
+//		Show_Str(80,80,80*4," 住院 ",BACK_COLOR,POINT_COLOR,80,0);
+//		POINT_COLOR = RED;
+//		Show_Str(0,160,80*4,"(2096)袋",BACK_COLOR,POINT_COLOR,80,0);
+//		delay_ms(1000);
 	}
 }
 
