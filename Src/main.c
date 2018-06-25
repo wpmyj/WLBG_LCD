@@ -57,19 +57,17 @@ int main(void)
   Stm32_Clock_Init(336,8,2,7);
 	MX_CRC_Init();
 	ROM_GT30L_Init();
-//	LCD_Init();
+  LCD_Init();
 	LED_GPIO_Config();
-	GUI_Init();
+// 	GUI_Init();
 	MX_GPIO_Init();
 	TIM2_Config();
 //	TIM3_Config();
 	TIM3_PWM_Init(2000,42-1);    	//42M/42=1M的计数频率，自动重装载为500，那么PWM频率为1M/500=2kHZ
 	USART1_Config();
 	delay_ms(200);
-	GUI_DispStringAt("MINI_STM32 STemWin test!",10,30);
-	GUI_DispStringAt("MINI_STM32 STemWin test!",20,46);
-	MainTask_test();
-	GUIDEMO_Main();
+// 	MainTask_test();
+// 	GUIDEMO_Main();
   while (1)
   {
 		LCD_Clear(BLACK);

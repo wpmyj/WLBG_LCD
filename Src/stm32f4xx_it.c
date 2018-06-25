@@ -156,12 +156,12 @@ void PendSV_Handler(void)
   * @param  None
   * @retval None
   */
-extern volatile GUI_TIMER_TIME OS_TimeMS;
+// extern volatile GUI_TIMER_TIME OS_TimeMS;
 void SysTick_Handler(void)
 {
   HAL_IncTick();
 	HAL_SYSTICK_IRQHandler();
-	OS_TimeMS++;
+// 	OS_TimeMS++;
 }
 void TIM2_IRQHandler(void)
 {
@@ -178,12 +178,17 @@ void TIM4_IRQHandler(void)
 void USART1_IRQHandler(void)
 {
 	UART_HandleTypeDef *huart =&huart1;
-	
-	if(huart->RxState == HAL_UART_STATE_BUSY_RX)
-	{
-		USART1_Do_Rx((uint8_t)(huart->Instance->DR & (uint8_t)0x00FF));
+  HAL_UART_IRQHandler(&huart1);	
+	if (__HAL_UART_GET_FLAG(&huart1, UART_FLAG_TC) != RESET) {
+// 			USART1_Do_Tx();		
+			__HAL_UART_CLEAR_FLAG(&huart1, UART_FLAG_TC);	
 	}
-  HAL_UART_IRQHandler(&huart1);
+	if (__HAL_UART_GET_FLAG(&huart1, UART_FLAG_RXNE) != RESET) {	
+			USART1_Do_Rx((uint8_t)(huart->Instance->DR & (uint8_t)0x00FF));	
+			__HAL_UART_CLEAR_FLAG(&huart1, UART_FLAG_RXNE);	
+	} else if (__HAL_UART_GET_FLAG(&huart1, UART_FLAG_ORE) != RESET) {	
+			__HAL_UART_CLEAR_FLAG(&huart1, UART_FLAG_ORE);	
+	}
 }
 /******************************************************************************/
 /*                 STM32F4xx Peripherals Interrupt Handlers                   */

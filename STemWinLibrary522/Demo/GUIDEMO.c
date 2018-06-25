@@ -66,9 +66,9 @@ void MainTask_test(void);
 /* 私有宏定义 ----------------------------------------------------------------*/
 #define Method3  
 
-#define XBF_KAITI24_ADDR       0     //字库存放在SPI_FLash地址
-uint8_t tempbuf[256]={0};            /* 从SD卡读取数据的缓冲 */
-#define XBF_KAITI24_SIZE    (1600)   // kaiti24.xbf字库文件存占用扇区数(每个扇区为4096个字节)
+// #define XBF_KAITI24_ADDR       0     //字库存放在SPI_FLash地址
+// uint8_t tempbuf[256]={0};            /* 从SD卡读取数据的缓冲 */
+// #define XBF_KAITI24_SIZE    (1600)   // kaiti24.xbf字库文件存占用扇区数(每个扇区为4096个字节)
 
 /* 扩展变量 ------------------------------------------------------------------*/
 extern GUI_CONST_STORAGE GUI_FONT GUI_FontSong16;
@@ -81,12 +81,13 @@ extern GUI_CONST_STORAGE GUI_FONT GUI_FontSong16;
   * 返 回 值: 无
   * 说    明: 无
   */
+static u8 fonbuf[] = "我们是好孩子";
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
-    { WINDOW_CreateIndirect,    "YSF1",            GUI_ID_TEXT1,     0, 0,  320,240,0,0},
-    { TEXT_CreateIndirect,      "硬石电子",        GUI_ID_TEXT2,     0, 20, 320, 240, 0, 0x0, 0},
-    { TEXT_CreateIndirect,      "硬石电子",        GUI_ID_TEXT3,     0, 50, 320, 240, 0, 0x0, 0},
-    { TEXT_CreateIndirect,      "硬石电子",        GUI_ID_TEXT4,     0, 100, 320, 240, 0, 0x0, 0},
-    { TEXT_CreateIndirect,      "硬石电子",        GUI_ID_TEXT5,     0, 120, 320, 240, 0, 0x0, 0},
+    { WINDOW_CreateIndirect,    "YSF1",            0,     0, 0,  320,240,0,0},
+    { TEXT_CreateIndirect,      (const char *)fonbuf,GUI_ID_TEXT0,     0, 20, 320, 240, 0, 0x0, 0},
+    { TEXT_CreateIndirect,      "韦乐海茨",        GUI_ID_TEXT1,     0, 50, 320, 240, 0, 0x0, 0},
+    { TEXT_CreateIndirect,      (const char *)fonbuf,GUI_ID_TEXT2,     0, 100, 320, 240, 0, 0x0, 0},
+    { TEXT_CreateIndirect,      "韦乐海茨",        GUI_ID_TEXT3,     0, 132, 130, 240, 0, 0x0, 0},
 };
 
 /*********************************************************************
@@ -841,16 +842,19 @@ void PaintDialog(WM_MESSAGE * pMsg)
   * 返 回 值: 无
   * 说    明: 无
   */
+extern GUI_CONST_STORAGE  GUI_FONT GUI_FontHZ16x2;
 void InitDialog(WM_MESSAGE * pMsg)
 {
   WM_HWIN hWin = pMsg->hWin;
 
+  TEXT_SetTextColor(WM_GetDialogItem(hWin,GUI_ID_TEXT4), GUI_BLUE);
+  TEXT_SetFont(WM_GetDialogItem(hWin,GUI_ID_TEXT4),&GUI_FontHZ16x2);
 	TEXT_SetTextColor(WM_GetDialogItem(hWin,GUI_ID_TEXT0), GUI_BLUE);
-  TEXT_SetFont(WM_GetDialogItem(hWin,GUI_ID_TEXT0),&GUI_FontHZ12);
+  TEXT_SetFont(WM_GetDialogItem(hWin,GUI_ID_TEXT0),&GUI_FontHZ16);
 	TEXT_SetTextColor(WM_GetDialogItem(hWin,GUI_ID_TEXT1), GUI_MAGENTA);
 	TEXT_SetFont(WM_GetDialogItem(hWin,GUI_ID_TEXT1),&GUI_FontHZ16);
 	TEXT_SetTextColor(WM_GetDialogItem(hWin,GUI_ID_TEXT2), GUI_RED);
-	TEXT_SetFont(WM_GetDialogItem(hWin,GUI_ID_TEXT2),&GUI_FontHZ24);
+	TEXT_SetFont(WM_GetDialogItem(hWin,GUI_ID_TEXT2),&GUI_FontHZ32);
 	TEXT_SetTextColor(WM_GetDialogItem(hWin,GUI_ID_TEXT3), GUI_GREEN);
 	TEXT_SetFont(WM_GetDialogItem(hWin,GUI_ID_TEXT3),&GUI_FontHZ32);
 }

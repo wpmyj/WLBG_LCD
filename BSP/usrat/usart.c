@@ -12,7 +12,8 @@ char Auto_Frame_Time2;
 char Auto_Frame_Time3;
 
 UART_HandleTypeDef huart1;
-
+UART_HandleTypeDef huart2;
+UART_HandleTypeDef huart3;
 
 void HAL_UART_MspInit(UART_HandleTypeDef *huart)
 {
@@ -33,7 +34,33 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
     GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-  }
+  }else if(huart->Instance==USART2){
+		__HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_USART2_CLK_ENABLE();
+
+    GPIO_InitStruct.Pin = GPIO_PIN_2;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_3;
+    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+	}else if(huart->Instance==USART3){
+		__HAL_RCC_GPIOB_CLK_ENABLE();
+    __HAL_RCC_USART3_CLK_ENABLE();
+
+    GPIO_InitStruct.Pin = GPIO_PIN_10;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_11;
+    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+	}
 }
 
 void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
@@ -42,19 +69,27 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
   if(huart->Instance==USART1)
   {
     __HAL_RCC_USART1_CLK_DISABLE();
-
     HAL_GPIO_DeInit(GPIOA,GPIO_PIN_9);
     HAL_GPIO_DeInit(GPIOA,GPIO_PIN_10);
-    
     HAL_NVIC_DisableIRQ(USART1_IRQn);
-  }
+  }else if(huart->Instance==USART2){
+    __HAL_RCC_USART2_CLK_DISABLE();
+    HAL_GPIO_DeInit(GPIOA,GPIO_PIN_2);
+    HAL_GPIO_DeInit(GPIOA,GPIO_PIN_3);
+    HAL_NVIC_DisableIRQ(USART2_IRQn);
+	} else if(huart->Instance==USART3){
+    __HAL_RCC_USART3_CLK_DISABLE();
+    HAL_GPIO_DeInit(GPIOB,GPIO_PIN_10);
+    HAL_GPIO_DeInit(GPIOB,GPIO_PIN_11);
+    HAL_NVIC_DisableIRQ(USART3_IRQn);
+	}
 }
 
 
 static void MX_NVIC_USART1_UART_Init(void)
 {
   /* USART1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(USART1_IRQn, 0, 2);
+  HAL_NVIC_SetPriority(USART1_IRQn, 0, 1);
   HAL_NVIC_EnableIRQ(USART1_IRQn);
 }
 
@@ -76,8 +111,62 @@ static void MX_USART1_UART_Init(void)
 	HAL_UART_Init(&huart1);
   MX_NVIC_USART1_UART_Init();
 	HAL_UART_Receive_IT(&huart1, (u8 *)aRxBuffer, RXBUFFERSIZE);
+}
+static void MX_NVIC_USART2_UART_Init(void)
+{
+  /* USART1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(USART2_IRQn, 0, 2);
+  HAL_NVIC_EnableIRQ(USART2_IRQn);
+}
+
+/* USART1 init function */
+static void MX_USART2_UART_Init(void)
+{
+   __HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_USART2_CLK_ENABLE();
+	
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 19200;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+//  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+  
+	HAL_UART_Init(&huart2);
+  MX_NVIC_USART2_UART_Init();
+	HAL_UART_Receive_IT(&huart2, (u8 *)aRxBuffer, RXBUFFERSIZE);
 
 }
+static void MX_NVIC_USART3_UART_Init(void)
+{
+  /* USART1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(USART3_IRQn, 0, 3);
+  HAL_NVIC_EnableIRQ(USART3_IRQn);
+}
+
+/* USART1 init function */
+static void MX_USART3_UART_Init(void)
+{
+   __HAL_RCC_GPIOB_CLK_ENABLE();
+	__HAL_RCC_USART3_CLK_ENABLE();
+	
+  huart3.Instance = USART3;
+  huart3.Init.BaudRate = 19200;
+  huart3.Init.WordLength = UART_WORDLENGTH_8B;
+  huart3.Init.StopBits = UART_STOPBITS_1;
+  huart3.Init.Parity = UART_PARITY_NONE;
+  huart3.Init.Mode = UART_MODE_TX_RX;
+  huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+//  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+  
+	HAL_UART_Init(&huart3);
+  MX_NVIC_USART3_UART_Init();
+	HAL_UART_Receive_IT(&huart3, (u8 *)aRxBuffer, RXBUFFERSIZE);
+
+}
+
 //=============================================================================
 //函数名称:Init_USART1
 //功能概要:USART1 初始化串口相关参数
@@ -188,9 +277,17 @@ static void USART3_Interrupts_Config(void)
 //=============================================================================
 void USART1_Config(void)
 {
+	GPIO_InitTypeDef GPIO_InitStruct;
 	USART1_Interrupts_Config();
 	Init_USART1();
 	MX_USART1_UART_Init();
+	
+	  __HAL_RCC_GPIOA_CLK_ENABLE();
+  /*Configure GPIO pins : PA11,RES485 */
+  GPIO_InitStruct.Pin = GPIO_PIN_11;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 }
 
  //=============================================================================
@@ -201,11 +298,9 @@ void USART1_Config(void)
 //=============================================================================
 void USART2_Config(void)
 {
-
-	
 	USART2_Interrupts_Config();
 	Init_USART2();
-
+	MX_USART2_UART_Init();
 }
 //=============================================================================
 //函数名称:USART1_Config
@@ -217,9 +312,9 @@ void USART2_Config(void)
 
 void USART3_Config(void )
 {	
-  
 	USART3_Interrupts_Config();
 	Init_USART3();
+	MX_USART3_UART_Init();
 }
 //=============================================================================
 //函数名称:fputc
