@@ -48,7 +48,7 @@ void LED_GPIO_Config(void)
 //=============================================================================
 static void Gled_Flash(void )
 {
-	static u8 retry = 50; //led闪烁时间间隔
+	static u8 retry = 100; //led闪烁时间间隔
 	static u8 led_state=1;
 	if(Gled_Num > 0){
 		retry--;
@@ -61,7 +61,7 @@ static void Gled_Flash(void )
 //			   Gled_Num--;
 			   led_state = 1;
 			}
-			retry = 50;
+			retry = 100;
 		}
 	}	
 }
@@ -74,7 +74,7 @@ static void Gled_Flash(void )
 //=============================================================================
 static void Rled_Flash(void )
 {
-	static u8 retry = 50; //led闪烁时间间隔
+	static u8 retry = 100; //led闪烁时间间隔
 	static u8 led_state=1;
 	if(Rled_Num > 0){
 		retry--;
@@ -87,7 +87,7 @@ static void Rled_Flash(void )
 //			   Rled_Num--;
 			   led_state = 1;
 			}
-			retry = 50;
+			retry = 100;
 		}
 	}	
 }

@@ -62,14 +62,23 @@ int main(void)
 // 	GUI_Init();
 	MX_GPIO_Init();
 	TIM2_Config();
-//	TIM3_Config();
-	TIM3_PWM_Init(2000,42-1);    	//42M/42=1M的计数频率，自动重装载为500，那么PWM频率为1M/500=2kHZ
+	TIM4_Config();
+	TIM3_PWM_Init(2000,84-1);    	//42M/42=1M的计数频率，自动重装载为500，那么PWM频率为1M/500=2kHZ
 	USART1_Config();
 	delay_ms(200);
+	TIM_SetTIM3Compare1(1000);
 // 	MainTask_test();
 // 	GUIDEMO_Main();
+	Usart1_Control_Data.txbuf[0] = 0x01;
+	Usart1_Control_Data.txbuf[10] = 0x11;
+	Usart1_Control_Data.txbuf[18] = 0x21;
+	RS485_start_send_byte(20);
   while (1)
   {
+	if (1 == Usart1_Control_Data.rx_aframe){ 
+			Usart1_Control_Data.rx_count = 0;
+			Usart1_Control_Data.rx_aframe = 0;
+		}
 		LCD_Clear(BLACK);
 	  Show_Str(20,20,16*2,"你好",BACK_COLOR,POINT_COLOR,16,0);
 //		Show_Str(50,20,24*6,"我们是好孩子",BACK_COLOR,POINT_COLOR,24,0);
@@ -225,6 +234,13 @@ void HAL_CRC_MspDeInit(CRC_HandleTypeDef* hcrc)
   }
 } 
 
+void RS485_start_send_byte(u16 send_count)
+{
+	Usart1_Control_Data.tx_index = 0;
+	Usart1_Control_Data.tx_count = send_count;
+	RS485_TEN();
+	HAL_UART_Transmit_IT(&huart1, &Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_index++], 1);
+}
 
 /******************* (C) COPYRIGHT 2015-2020 ????????? *****END OF FILE****/
 

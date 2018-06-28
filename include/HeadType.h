@@ -83,8 +83,8 @@ typedef __I uint8_t vuc8;   /*!< Read Only */
 
 
 #define  RS485_COM PAout(11)       
-#define  RS485_REN()	RS485_COM = 0	
-#define  RS485_TEN()	RS485_COM = 1
+#define  RS485_REN()	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_11,GPIO_PIN_RESET)
+#define  RS485_TEN()	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_11,GPIO_PIN_SET)
 /*************define type end*******************/
 
 /*************union type start*******************/

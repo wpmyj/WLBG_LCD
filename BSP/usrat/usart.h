@@ -4,8 +4,8 @@
 #include "stm32f4xx_hal.h"
 #include "stdio.h"
 
-#define       RE485_SEND    	  GPIO_SetBits(GPIOA, GPIO_Pin_11)
-#define       RE485_REC  				GPIO_ResetBits(GPIOA, GPIO_Pin_11)
+#define       RE485_SEND    	  HAL_GPIO_WritePin(GPIOA,GPIO_PIN_11,GPIO_PIN_SET)
+#define       RE485_REC  				HAL_GPIO_WritePin(GPIOA,GPIO_PIN_11,GPIO_PIN_RESET)
 
 
 
@@ -27,6 +27,7 @@ void USART3_Do_Tx(void );
 void USART1_Do_Rx(unsigned char rxdata);
 void USART2_Do_Rx(unsigned char rxdata);
 void USART3_Do_Rx(unsigned char rxdata);
+void RS485_start_send_byte(unsigned int  send_count);
 //void Respond_Host_Comm(void);
 //void Dispose_Data_For_Host(void);
 #endif

@@ -27,12 +27,12 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
 
     GPIO_InitStruct.Pin = GPIO_PIN_9;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+		GPIO_InitStruct.Pull=GPIO_PULLUP;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+		GPIO_InitStruct.Alternate=GPIO_AF7_USART1;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
     GPIO_InitStruct.Pin = GPIO_PIN_10;
-    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
   }else if(huart->Instance==USART2){
 		__HAL_RCC_GPIOA_CLK_ENABLE();
@@ -40,12 +40,12 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
 
     GPIO_InitStruct.Pin = GPIO_PIN_2;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+		GPIO_InitStruct.Pull=GPIO_PULLUP;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+		GPIO_InitStruct.Alternate=GPIO_AF7_USART2;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
     GPIO_InitStruct.Pin = GPIO_PIN_3;
-    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 	}else if(huart->Instance==USART3){
 		__HAL_RCC_GPIOB_CLK_ENABLE();
@@ -53,12 +53,12 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
 
     GPIO_InitStruct.Pin = GPIO_PIN_10;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+		GPIO_InitStruct.Pull=GPIO_PULLUP;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+		GPIO_InitStruct.Alternate=GPIO_AF7_USART3;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     GPIO_InitStruct.Pin = GPIO_PIN_11;
-    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 	}
 }
@@ -89,7 +89,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
 static void MX_NVIC_USART1_UART_Init(void)
 {
   /* USART1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(USART1_IRQn, 0, 1);
+  HAL_NVIC_SetPriority(USART1_IRQn, 0, 2);
   HAL_NVIC_EnableIRQ(USART1_IRQn);
 }
 
@@ -109,8 +109,9 @@ static void MX_USART1_UART_Init(void)
 //  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
   
 	HAL_UART_Init(&huart1);
+	__HAL_UART_ENABLE_IT((UART_HandleTypeDef *)&huart1, UART_IT_TC);
+	__HAL_UART_ENABLE_IT((UART_HandleTypeDef *)&huart1, UART_IT_RXNE);
   MX_NVIC_USART1_UART_Init();
-	HAL_UART_Receive_IT(&huart1, (u8 *)aRxBuffer, RXBUFFERSIZE);
 }
 static void MX_NVIC_USART2_UART_Init(void)
 {
@@ -135,8 +136,9 @@ static void MX_USART2_UART_Init(void)
 //  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
   
 	HAL_UART_Init(&huart2);
+	__HAL_UART_ENABLE_IT((UART_HandleTypeDef *)&huart2, UART_IT_TC);
+	__HAL_UART_ENABLE_IT((UART_HandleTypeDef *)&huart2, UART_IT_RXNE);
   MX_NVIC_USART2_UART_Init();
-	HAL_UART_Receive_IT(&huart2, (u8 *)aRxBuffer, RXBUFFERSIZE);
 
 }
 static void MX_NVIC_USART3_UART_Init(void)
@@ -162,8 +164,9 @@ static void MX_USART3_UART_Init(void)
 //  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
   
 	HAL_UART_Init(&huart3);
+	__HAL_UART_ENABLE_IT((UART_HandleTypeDef *)&huart3, UART_IT_TC);
+	__HAL_UART_ENABLE_IT((UART_HandleTypeDef *)&huart3, UART_IT_RXNE);	
   MX_NVIC_USART3_UART_Init();
-	HAL_UART_Receive_IT(&huart3, (u8 *)aRxBuffer, RXBUFFERSIZE);
 
 }
 
@@ -281,13 +284,14 @@ void USART1_Config(void)
 	USART1_Interrupts_Config();
 	Init_USART1();
 	MX_USART1_UART_Init();
-	
+
 	  __HAL_RCC_GPIOA_CLK_ENABLE();
   /*Configure GPIO pins : PA11,RES485 */
   GPIO_InitStruct.Pin = GPIO_PIN_11;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+	RS485_REN();
 }
 
  //=============================================================================
@@ -423,9 +427,10 @@ void USART3_Puts(char * str)
 void USART1_Do_Tx(void )
 {
     if (Usart1_Control_Data.tx_index < Usart1_Control_Data.tx_count) {
-//		USART_SendData(USART1, Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_index]);
+		HAL_UART_Transmit_IT(&huart1, &Usart1_Control_Data.txbuf[Usart1_Control_Data.tx_index], 1);
 		Usart1_Control_Data.tx_index++;
 	}else{
+		   RS485_REN();
        Usart1_Control_Data.tx_count = 0; 
        Usart1_Control_Data.tx_index = 0;
     }
@@ -440,7 +445,7 @@ void USART1_Do_Tx(void )
 void USART2_Do_Tx(void )
 {
     if (Usart2_Control_Data.tx_index < Usart2_Control_Data.tx_count) {
-//		USART_SendData(USART2, Usart2_Control_Data.txbuf[Usart2_Control_Data.tx_index]);
+			HAL_UART_Transmit_IT(&huart2, &Usart2_Control_Data.txbuf[Usart2_Control_Data.tx_index], 1);
 		Usart2_Control_Data.tx_index++;
 	}else{
        Usart2_Control_Data.tx_count = 0; 
@@ -457,7 +462,7 @@ void USART2_Do_Tx(void )
 void USART3_Do_Tx(void )
 {
     if (Usart3_Control_Data.tx_index < Usart3_Control_Data.tx_count) {
-//		USART_SendData(USART3, Usart3_Control_Data.txbuf[Usart3_Control_Data.tx_index]);
+		HAL_UART_Transmit_IT(&huart3, &Usart3_Control_Data.txbuf[Usart3_Control_Data.tx_index], 1);
 		Usart3_Control_Data.tx_index++;
 	}else{
        Usart3_Control_Data.tx_count = 0; 

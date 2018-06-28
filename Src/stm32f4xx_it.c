@@ -177,10 +177,10 @@ void TIM4_IRQHandler(void)
 }
 void USART1_IRQHandler(void)
 {
-	UART_HandleTypeDef *huart =&huart1;
-  HAL_UART_IRQHandler(&huart1);	
+	UART_HandleTypeDef *huart =&huart1;	
+	HAL_UART_IRQHandler(&huart1);
 	if (__HAL_UART_GET_FLAG(&huart1, UART_FLAG_TC) != RESET) {
-// 			USART1_Do_Tx();		
+			USART1_Do_Tx();		
 			__HAL_UART_CLEAR_FLAG(&huart1, UART_FLAG_TC);	
 	}
 	if (__HAL_UART_GET_FLAG(&huart1, UART_FLAG_RXNE) != RESET) {	
