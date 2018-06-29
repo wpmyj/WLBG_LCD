@@ -566,6 +566,16 @@
               <FileType>4</FileType>
               <FilePath>..\Inc\STM32F407VET6_GT60L16M2K4_KEIL4.lib</FilePath>
             </File>
+            <File>
+              <FileName>key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\key.c</FilePath>
+            </File>
+            <File>
+              <FileName>24cxx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\24cxx.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

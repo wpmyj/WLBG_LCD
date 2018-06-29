@@ -9,7 +9,7 @@ TIM_HandleTypeDef htim4;
 TIM_HandleTypeDef htim3;
 #else
 TIM_HandleTypeDef  htim3;      	//定时器句柄 
-TIM_OC_InitTypeDef htim3_CH4;	//定时器3通道1句柄
+TIM_OC_InitTypeDef htim3_CH3;	//定时器3通道1句柄
 #endif
 //=============================================================================
 //函数名称:TIM2_Config
@@ -23,9 +23,9 @@ void TIM2_Config(void )
   TIM_MasterConfigTypeDef sMasterConfig;
   
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 42-1;
+  htim2.Init.Prescaler = 84-1;//APB1_PRESC!=1时，定时器时钟=APB1 * 2
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 5000;
+  htim2.Init.Period = 5000 -1;
   htim2.Init.ClockDivision=TIM_CLOCKDIVISION_DIV1;
   HAL_TIM_Base_Init(&htim2);
 
@@ -51,7 +51,7 @@ void TIM3_Config(void)
   TIM_MasterConfigTypeDef sMasterConfig;
   
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 42-1;
+  htim3.Init.Prescaler = 84-1;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim3.Init.Period = 5000;
   htim3.Init.ClockDivision=TIM_CLOCKDIVISION_DIV1;
@@ -81,12 +81,12 @@ void TIM3_PWM_Init(u16 arr,u16 psc)
     htim3.Init.ClockDivision=TIM_CLOCKDIVISION_DIV1;
     HAL_TIM_PWM_Init(&htim3);       //初始化PWM
     
-    htim3_CH4.OCMode=TIM_OCMODE_PWM1; //模式选择PWM1
-    htim3_CH4.Pulse=arr/2;            //设置比较值,此值用来确定占空比，默认比较值为自动重装载值的一半,即占空比为50%
-    htim3_CH4.OCPolarity=TIM_OCPOLARITY_LOW; //输出比较极性为低 
-    HAL_TIM_PWM_ConfigChannel(&htim3,&htim3_CH4,TIM_CHANNEL_4);//配置TIM14通道4
+    htim3_CH3.OCMode=TIM_OCMODE_PWM1; //模式选择PWM1
+    htim3_CH3.Pulse=arr/2;            //设置比较值,此值用来确定占空比，默认比较值为自动重装载值的一半,即占空比为50%
+    htim3_CH3.OCPolarity=TIM_OCPOLARITY_LOW; //输出比较极性为低 
+    HAL_TIM_PWM_ConfigChannel(&htim3,&htim3_CH3,TIM_CHANNEL_3);//配置TIM3通道3
 	
-    HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_4);//开启PWM通道4
+    HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_3);//开启PWM通道3
 }
 
 
@@ -97,21 +97,21 @@ void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef *htim)
 {
 	GPIO_InitTypeDef GPIO_Initure;
 	__HAL_RCC_TIM3_CLK_ENABLE();			//使能定时器3
-	__HAL_RCC_GPIOB_CLK_ENABLE();			//开启GPIOB时钟
+	__HAL_RCC_GPIOC_CLK_ENABLE();			//开启GPIOB时钟
 	
-	GPIO_Initure.Pin=GPIO_PIN_1;           	//PB1
+	GPIO_Initure.Pin=GPIO_PIN_8;           	//PB1
 	GPIO_Initure.Mode=GPIO_MODE_AF_PP;  	//复用推挽输出
 	GPIO_Initure.Pull=GPIO_PULLUP;          //上拉
 	GPIO_Initure.Speed=GPIO_SPEED_HIGH;     //高速
 	GPIO_Initure.Alternate= GPIO_AF2_TIM3;	//PF9复用为TIM14_CH1
-	HAL_GPIO_Init(GPIOB,&GPIO_Initure);
+	HAL_GPIO_Init(GPIOC,&GPIO_Initure);
 }
 
 //设置TIM通道4的占空比
 //compare:比较值
 void TIM_SetTIM3Compare1(u32 compare)
 {
-	TIM3->CCR4=compare; 
+	TIM3->CCR3=compare; 
 }
 #endif
 
@@ -127,9 +127,9 @@ void TIM4_Config(void)
   TIM_MasterConfigTypeDef sMasterConfig;
   
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 42-1;
+  htim4.Init.Prescaler = 84-1;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 5000;
+  htim4.Init.Period = 3000;
   htim4.Init.ClockDivision=TIM_CLOCKDIVISION_DIV1;
   HAL_TIM_Base_Init(&htim4);
 
@@ -190,12 +190,62 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
+	static u8 key = 0;
 	if(htim->Instance==TIM2){
 		Led_Flash();
+		if(Menu_Valid_Time > 0){
+			key=Key_Scan();
+			if(key >0){
+				Key_ScanNum = key;
+				Menu_Valid_Time = MENU_VALID_TIME;
+				key = 0;
+			}
+			if(timeflag >0){
+					timeflag--;
+			}
+			if(Menu_Exit_Time > 0){
+				Menu_Exit_Time--;
+			}
+			Menu_Valid_Time--;
+	}else{
+			Menu_Exit_Time = 0;
+	}
   }else if(htim->Instance==TIM3){
 
   }else  if(htim->Instance==TIM4){
-
+				if (1 == Usart1_Control_Data.rx_start){
+					if(Auto_Frame_Time1 >0){
+							Auto_Frame_Time1--;
+					}else{
+							Auto_Frame_Time1 = 0;
+							Usart1_Control_Data.rx_aframe = 1; 
+							Usart1_Control_Data.rx_count = Usart1_Control_Data.rx_index;
+							Usart1_Control_Data.rx_start = 0;
+							Usart1_Control_Data.rx_index = 0;
+					}
+			}
+			if (1 == Usart2_Control_Data.rx_start){
+					if(Auto_Frame_Time2 >0){
+							Auto_Frame_Time2--;
+					}else{
+							Auto_Frame_Time2 = 0;
+							Usart2_Control_Data.rx_aframe = 1; 
+							Usart2_Control_Data.rx_count = Usart2_Control_Data.rx_index;
+							Usart2_Control_Data.rx_start = 0;
+							Usart2_Control_Data.rx_index = 0;
+					}
+			}
+		 if (1 == Usart3_Control_Data.rx_start){
+					if(Auto_Frame_Time3 >0){
+							Auto_Frame_Time3--;
+					}else{
+							Auto_Frame_Time3 = 0;
+							Usart3_Control_Data.rx_aframe = 1; 
+							Usart3_Control_Data.rx_count = Usart3_Control_Data.rx_index;
+							Usart3_Control_Data.rx_start = 0;
+							Usart3_Control_Data.rx_index = 0;
+					}
+			}
   }
 }
 

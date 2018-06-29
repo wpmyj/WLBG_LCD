@@ -6,6 +6,7 @@
 #include <string.h>	
 #include "usart.h"
 #include "led.h"
+#include "24cxx.h" 
 
 /*************Typedef datatype start*******************/
 typedef char int8;
@@ -80,6 +81,8 @@ typedef __I uint8_t vuc8;   /*!< Read Only */
 
 #define LOCK_OPEN_TIME	60		//开锁动作执行时间 1000*5ms
 #define LOCK_CLOSE_TIME	20		//开锁动作执行时间 1000*5ms
+#define MENU_EXIT_TIME 			4000
+#define MENU_VALID_TIME			12000
 
 
 #define  RS485_COM PAout(11)       
@@ -272,6 +275,13 @@ extern TIM_HandleTypeDef htim3;
 extern TIM_OC_InitTypeDef htim3_CH4;	
 extern TIM_HandleTypeDef htim4;
 extern UART_HandleTypeDef huart1;
+extern u8 AdrrOK_Flag;
+extern u8 Key_ScanNum;
+extern u8 Key_SetParamFlag;
+extern u8 slaveaddr;
+extern unsigned short  timeflag;
+extern unsigned short  Menu_Exit_Time;
+extern unsigned long Menu_Valid_Time;
 /*************extern variable end*******************/
 
 /*************function start*******************/

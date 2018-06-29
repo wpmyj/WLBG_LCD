@@ -47,7 +47,6 @@
 CRC_HandleTypeDef hcrc;
 /* Private function prototypes -----------------------------------------------*/
 void Stm32_Clock_Init(u32 plln,u32 pllm,u32 pllp,u32 pllq);
-static void MX_GPIO_Init(void);
 void MX_CRC_Init(void);
 void GUIDEMO_Main(void);
 extern void MainTask_test(void);
@@ -55,46 +54,36 @@ int main(void)
 {
   HAL_Init();
   Stm32_Clock_Init(336,8,2,7);
-	MX_CRC_Init();
+// 	MX_CRC_Init();
 	ROM_GT30L_Init();
   LCD_Init();
 	LED_GPIO_Config();
+	AT24CXX_Init();
+	KEY_GPIO_Config();
 // 	GUI_Init();
-	MX_GPIO_Init();
 	TIM2_Config();
 	TIM4_Config();
 	TIM3_PWM_Init(2000,84-1);    	//42M/42=1M的计数频率，自动重装载为500，那么PWM频率为1M/500=2kHZ
 	USART1_Config();
-	delay_ms(200);
-	TIM_SetTIM3Compare1(1000);
+// 	TIM_SetTIM3Compare1(1000);
 // 	MainTask_test();
 // 	GUIDEMO_Main();
-	Usart1_Control_Data.txbuf[0] = 0x01;
-	Usart1_Control_Data.txbuf[10] = 0x11;
-	Usart1_Control_Data.txbuf[18] = 0x21;
-	RS485_start_send_byte(20);
   while (1)
   {
-	if (1 == Usart1_Control_Data.rx_aframe){ 
-			Usart1_Control_Data.rx_count = 0;
-			Usart1_Control_Data.rx_aframe = 0;
-		}
+		dispose_key();
+		if(Key_SetParamFlag == 0){
+// 			Communication_Process();
 		LCD_Clear(BLACK);
-	  Show_Str(20,20,16*2,"你好",BACK_COLOR,POINT_COLOR,16,0);
-//		Show_Str(50,20,24*6,"我们是好孩子",BACK_COLOR,POINT_COLOR,24,0);
-		Show_Str(40,50,6*32,"我们是好孩子",BACK_COLOR,POINT_COLOR,32,0);
-		Show_Str(100,100,16*6,"Hello",BACK_COLOR,POINT_COLOR,32,0);
-		Show_Str(10,130,12*6,"World",BACK_COLOR,POINT_COLOR,24,0);
-		Show_Str(10 + 12*6,130,8*6,"World",BACK_COLOR,POINT_COLOR,16,0);
-		Show_Str(32,162,64*4,"东ABC2区",BACK_COLOR,POINT_COLOR,64,0);
-		delay_ms(1000);
-		LCD_Clear(BLACK);
+	  delay_ms(1000);
 		POINT_COLOR = WHITE;
 		Show_Str(40,0,80*4,"东12区",BACK_COLOR,POINT_COLOR,80,0);
 		Show_Str(80,80,80*4," 住院 ",BACK_COLOR,POINT_COLOR,80,0);
 		POINT_COLOR = RED;
 		Show_Str(0,160,80*4,"(2096)袋",BACK_COLOR,POINT_COLOR,80,0);
 		delay_ms(1000);
+		}else{
+			dispose_menu();
+		}
 	}
 }
 
@@ -141,33 +130,7 @@ void Stm32_Clock_Init(u32 plln,u32 pllm,u32 pllp,u32 pllq)
 	}
 }
 
-/** Configure pins as 
-        * Analog 
-        * Input 
-        * Output
-        * EVENT_OUT
-        * EXTI
-*/
-static void MX_GPIO_Init(void)
-{
 
-  GPIO_InitTypeDef GPIO_InitStruct;
-
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOD_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-
-  /*Configure GPIO pins : PC2 PC3 */
-  GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_2;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-
-
-}
 
 /* USER CODE BEGIN 4 */
 
