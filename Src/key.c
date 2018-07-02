@@ -112,7 +112,8 @@ void dispose_menu(void)
 	static u8 param_flash_flag = 0;
 	switch(Menu){
 	case MENU_RESERVE:break;
-	case MENU_READPARAM: slaveaddrtemp1 = AT24CXX_ReadOneByte(0x00);slaveaddrtemp2 = AT24CXX_ReadOneByte(0x01);
+	case MENU_READPARAM: 
+		  slaveaddrtemp1 = AT24CXX_ReadOneByte(0x00);slaveaddrtemp2 = AT24CXX_ReadOneByte(0x01);
 	  	Show_Str(32,32*4,8*32,"修改前设备地址: ",BACK_COLOR,POINT_COLOR,32,0);
 		  Show_Str(32,32*2,8*32,"请修改当前地址: ",BACK_COLOR,POINT_COLOR,32,0);
 		if((slaveaddrtemp1 == slaveaddrtemp2)&&(slaveaddrtemp1 < 128)){

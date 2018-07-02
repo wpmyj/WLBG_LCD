@@ -9,7 +9,7 @@ void delay_nus(u32 nus)
 {		
     int i;
 	while(nus--){
-		for(i =0 ;i < 12;i++);
+		for(i =0 ;i < 15;i++);
 	} 
 }
 void delay_nms(u32 nms)
@@ -34,8 +34,8 @@ void I2C_INIT()
 
   /*Configure GPIO pins : PC2 PC3 */
 	GPIO_InitStruct.Pin=I2C_SCL|I2C_SDA;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
 	HAL_GPIO_Init(GPIO_I2C,&GPIO_InitStruct);
 
 	I2C_SCL_H;
@@ -50,13 +50,14 @@ void I2C_INIT()
 *******************************************************************************/
 void I2C_SDA_OUT()
 {
-  GPIO_InitTypeDef GPIO_InitStruct;	
-	__HAL_RCC_GPIOA_CLK_ENABLE();
-	
-	GPIO_InitStruct.Pin=I2C_SDA;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(GPIO_I2C,&GPIO_InitStruct);
+//   GPIO_InitTypeDef GPIO_InitStruct;	
+// 	__HAL_RCC_GPIOA_CLK_ENABLE();
+// 	
+// 	GPIO_InitStruct.Pin=I2C_SDA;
+//   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
+//   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+// 	HAL_GPIO_Init(GPIO_I2C,&GPIO_InitStruct);
+	GPIOA->MODER&=~(3<<(1*2));GPIOA->MODER|=1<<1*2;
 }
 
 /*******************************************************************************
@@ -67,13 +68,15 @@ void I2C_SDA_OUT()
 *******************************************************************************/
 void I2C_SDA_IN(void)
 {
-	GPIO_InitTypeDef GPIO_InitStruct;	
-	
-	GPIO_InitStruct.Pin = I2C_SDA;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	GPIO_InitStruct.Pull = GPIO_PULLUP;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+// 	GPIO_InitTypeDef GPIO_InitStruct;	
+// 	__HAL_RCC_GPIOA_CLK_ENABLE();
+// 	
+// 	GPIO_InitStruct.Pin = I2C_SDA;
+//   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+//   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+// 	GPIO_InitStruct.Pull = GPIO_PULLUP;
+// 	HAL_GPIO_Init(GPIO_I2C, &GPIO_InitStruct);
+	GPIOA->MODER&=~(3<<(1*2));GPIOA->MODER|=0<<1*2;
 }
 
 //产生起始信号
@@ -168,6 +171,7 @@ void I2C_Send_Byte(u8 txd)
 			I2C_SDA_L;
 
 		txd<<=1;
+		delay_nus(2); //发送数据
 		I2C_SCL_H;
 		delay_nus(2); //发送数据
 		I2C_SCL_L;
@@ -357,9 +361,9 @@ unsigned long AT24CXX_ReadLenByte(unsigned short ReadAddr,unsigned char Len)
 u8 AT24CXX_Check(void)
 {
 	u8 temp;
-    
-	temp=AT24CXX_ReadOneByte(255);//避免每次开机都写AT24CXX			   
-	if(temp==0X55){
+
+	temp=AT24CXX_ReadOneByte(255);//避免每次开机都写AT24CXX		
+ 	if(temp==0X55){
 		return 0;
 	}else//排除第一次初始化的情况
 	{

@@ -4,7 +4,7 @@
 
 //如果移植程序时只要改一下三个地方就行了
 /* 定时使用的IO口 */
-#define I2C_SCL       GPIO_PIN_0	  
+#define I2C_SCL       GPIO_PIN_0  
 #define I2C_SDA       GPIO_PIN_1	  
 #define GPIO_I2C      GPIOA
 #define I2C_RCC				RCC_APB2Periph_GPIOA
